@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Progetti | Andrea Del Fatto</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #050505;
+      --text-primary: #e2e8f0;
+      --text-highlight: #66fcf1;
+      --text-secondary: #94a3b8;
+      --border-color: rgba(102, 252, 241, 0.15);
+      --folder-bg: #0a0a0a;
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    ::-webkit-scrollbar { display: none; }
+    html { scrollbar-width: none; -ms-overflow-style: none; overflow-y: scroll; scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      display: flex; flex-direction: column;
+      min-height: 100vh; overflow-x: hidden;
+      position: relative;
+    }
+
+    /* --- BACKGROUND --- */
+    .bg-grid {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px; pointer-events: none; z-index: -1;
+    }
+
+    /* --- NAVIGAZIONE (Stile Home/Profilo) --- */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 2.5rem 5%; width: 100%; position: absolute; top: 0; left: 0; z-index: 200; background: transparent;
+    }
+    .logo { font-family: var(--font-mono); font-weight: 700; font-size: 1.5rem; color: var(--text-highlight); letter-spacing: -1px; z-index: 201; text-decoration: none; line-height: 1; }
+
+    .nav-links { list-style: none; display: flex; gap: 2rem; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
+    .nav-links a { position: relative; display: inline-block; text-decoration: none; color: var(--text-primary); font-size: 1rem; font-weight: 400; overflow: hidden; }
+    .nav-links a span { display: inline-block; transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
+    .nav-links a::after { content: attr(data-text); position: absolute; left: 0; top: 100%; width: 100%; color: var(--text-highlight); transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
+    .nav-links a:hover span { transform: translateY(-100%); }
+    .nav-links a:hover::after { transform: translateY(-100%); }
+    .nav-links a.active span { transform: translateY(-100%); }
+    .nav-links a.active::after { transform: translateY(-100%); color: var(--text-highlight); }
+
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; z-index: 201; }
+    .lang-switch { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: var(--text-primary); text-decoration: none; border: 1px solid var(--border-color); padding: 0.4rem 0.8rem; border-radius: 6px; background: rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+    .lang-switch:hover { color: var(--text-highlight); border-color: var(--text-highlight); background: transparent; box-shadow: 0 0 15px rgba(102, 252, 241, 0.3); }
+
+    .hamburger { display: none; cursor: pointer; z-index: 201; width: 30px; height: 20px; position: relative; }
+    .hamburger span { display: block; position: absolute; height: 2px; width: 100%; background: var(--text-highlight); border-radius: 9px; transition: .25s ease-in-out; }
+    .hamburger span:nth-child(1) { top: 0px; } .hamburger span:nth-child(2) { top: 9px; } .hamburger span:nth-child(3) { top: 18px; }
+    .hamburger.open span:nth-child(1) { top: 9px; transform: rotate(135deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; left: -60px; }
+    .hamburger.open span:nth-child(3) { top: 9px; transform: rotate(-135deg); }
+
+    /* Mobile Menu */
+    .mobile-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(20px); z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+    .mobile-menu.active { opacity: 1; pointer-events: all; }
+    .mobile-link { font-family: var(--font-mono); font-size: 2rem; color: var(--text-primary); text-decoration: none; margin: 1.5rem 0; position: relative; }
+    .mobile-link:hover { color: var(--text-highlight); }
+    .menu-cursor { display: inline-block; width: 10px; height: 2rem; background-color: var(--text-highlight); vertical-align: middle; opacity: 0; }
+    .menu-cursor.typing { opacity: 1; animation: blink 1s infinite; }
+    .mobile-link.active-page .text-content { color: var(--text-highlight); }
+    .mobile-link.active-page .menu-cursor { opacity: 1; animation: blink 1s infinite; display: inline-block; }
+
+    /* --- HEADER --- */
+    header { padding: 8rem 5% 1rem 5%; text-align: center; max-width: 900px; margin: 0 auto; line-height: 1.6; }
+
+    /* MODIFICA: whitespace nowrap e clamp aggiustato per singola riga */
+    h1 {
+      font-family: var(--font-mono);
+      font-size: clamp(1.5rem, 6vw, 2.5rem); /* Minimo ridotto a 1.5rem per schermi piccoli */
+      color: #fff;
+      margin-bottom: 0.5rem;
+      min-height: 3rem;
+      line-height: 1.2;
+      white-space: nowrap; /* FORZA SU UNA SOLA RIGA */
+    }
+
+    .subtitle {
+      font-size: clamp(0.8rem, 4vw, 1.1rem); /* Adattato per schermi stretti */
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-family: var(--font-mono);
+      min-height: 1.5rem;
+      white-space: nowrap; /* FORZA SU UNA SOLA RIGA */
+    }
+    /* --- STACK VIEW --- */
+    #stack-view {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 50vh; perspective: 1200px;
+      margin-bottom: 3rem; transition: opacity 0.5s ease;
+      overflow: hidden; padding: 1rem 0; position: relative;
+    }
+
+    .folder-stack {
+      position: relative; width: 280px; height: 200px;
+      margin-bottom: 4rem;
+      transform-style: preserve-3d;
+      transform: rotateY(-30deg) rotateX(10deg) translateX(-10px);
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+      cursor: pointer;
+    }
+
+    @media(hover: hover) { .folder-stack:hover { transform: rotateY(-15deg) rotateX(5deg) scale(1.02); } }
+
+    .stack-item {
+      position: absolute; width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(20, 25, 30, 0.95), rgba(10, 10, 15, 0.98));
+      border: 1px solid rgba(102, 252, 241, 0.3); border-radius: 0 12px 12px 12px;
+      box-shadow: -5px 5px 20px rgba(0,0,0,0.5);
+      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: flex; flex-direction: column; padding: 1.5rem;
+    }
+
+    .stack-item::before {
+      content: ''; position: absolute; top: -14px; left: -1px; width: 40%; height: 15px;
+      background: inherit; border: 1px solid rgba(102, 252, 241, 0.3); border-bottom: none; border-radius: 8px 8px 0 0; z-index: 1;
+    }
+
+    .stack-item:last-child { border-color: var(--text-highlight); box-shadow: 0 0 30px rgba(102, 252, 241, 0.15); }
+    .stack-item:last-child::before { border-color: var(--text-highlight); }
+
+    .stack-line { height: 6px; background: rgba(102, 252, 241, 0.15); margin-bottom: 12px; border-radius: 3px; width: 100%; }
+    .stack-line.title { height: 12px; width: 70%; background: var(--text-highlight); opacity: 0.7; margin-bottom: 25px; }
+    .stack-line.short { width: 50%; }
+
+    .stack-item:nth-child(1) { transform: translateZ(-120px) translateX(-60px); opacity: 0.5; }
+    .stack-item:nth-child(2) { transform: translateZ(-80px) translateX(-40px); opacity: 0.7; }
+    .stack-item:nth-child(3) { transform: translateZ(-40px) translateX(-20px); opacity: 0.9; }
+    .stack-item:nth-child(4) { transform: translateZ(0) translateX(0); opacity: 1; }
+
+    .folder-stack.spread .stack-item { opacity: 0; }
+    .folder-stack.spread .stack-item:nth-child(1) { transform: translate3d(-300px, -150px, -200px); }
+    .folder-stack.spread .stack-item:nth-child(2) { transform: translate3d(-150px, 150px, -100px); }
+    .folder-stack.spread .stack-item:nth-child(3) { transform: translate3d(150px, -150px, 0px); }
+    .folder-stack.spread .stack-item:nth-child(4) { transform: translate3d(300px, 100px, 100px) scale(1.5); }
+
+    /* --- LUCCHETTO --- */
+    #lock-container {
+      position: absolute; bottom: 40px; left: 50%;
+      transform: translateX(-50%) translateZ(60px);
+      z-index: 25; cursor: pointer; width: 40px; height: 40px;
+    }
+
+    .lock-icon-svg {
+      width: 100%; height: 100%; fill: rgba(0,0,0,0.5); stroke: var(--text-highlight);
+      stroke-width: 8; stroke-linecap: round; stroke-linejoin: round;
+      transition: all 0.3s ease; filter: drop-shadow(0 0 10px rgba(102, 252, 241, 0.4)); overflow: visible;
+    }
+
+    #lock-container:hover .lock-icon-svg { filter: drop-shadow(0 0 20px rgba(102, 252, 241, 0.8)); transform: scale(1.1); }
+    .lock-shackle { transform-origin: 70% 40%; transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1.5); }
+    #lock-container.unlocked .lock-shackle { transform: translateY(-10px) rotate(45deg); stroke: #fff; }
+    #lock-container.unlocked { pointer-events: none; }
+    #lock-container.fade-out { opacity: 0; transform: translateX(-50%) scale(0.5); transition: opacity 0.3s, transform 0.3s; }
+
+    .click-hint {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      color: var(--text-highlight); font-family: var(--font-mono); font-size: 0.85rem;
+      text-transform: uppercase; letter-spacing: 2px; animation: pulseText 2s infinite;
+      pointer-events: none; width: 100%; text-align: center;
+    }
+    .click-hint.fade-out { opacity: 0; transition: opacity 0.3s; }
+
+    /* --- GRIGLIA PROGETTI --- */
+    .projects-container { padding: 0 5% 5rem 5%; max-width: 1200px; margin: 0 auto; flex: 1; display: none; }
+    .projects-container.visible { display: block; }
+
+    .projects-grid { display: grid; gap: 2rem; grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .projects-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .folder-wrapper { position: relative; cursor: pointer; transition: transform 0.3s ease; opacity: 0; transform: scale(0.6) translateY(50px); }
+    .folder-wrapper.animate-in { opacity: 1; transform: scale(1) translateY(0); transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .folder-wrapper:active { transform: scale(0.98); }
+
+    .folder-tab { width: 40%; height: 14px; background: var(--folder-bg); border: 1px solid var(--border-color); border-bottom: none; border-radius: 8px 8px 0 0; margin-left: 0; position: relative; z-index: 1; transition: all 0.3s; }
+    .folder-body {
+      background: var(--folder-bg); border: 1px solid var(--border-color); border-radius: 0 12px 12px 12px; padding: 1.5rem;
+      min-height: 200px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; transition: all 0.3s;
+    }
+    .folder-wrapper:hover .folder-tab, .folder-wrapper:hover .folder-body { border-color: var(--text-highlight); background: #111; }
+
+    .folder-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); }
+    .folder-title { font-size: 1.15rem; font-weight: 600; color: #fff; margin-bottom: 0.5rem; line-height: 1.3; }
+    .folder-preview-text { font-size: 0.9rem; color: var(--text-primary); line-height: 1.4; opacity: 0.8; }
+    .folder-action { margin-top: 1.5rem; text-align: right; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-highlight); display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+
+    /* --- MODAL PROGETTO --- */
+    .project-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px); z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; justify-content: center; align-items: center; padding: 0; }
+    .project-modal.active { opacity: 1; pointer-events: all; }
+
+    .modal-content {
+      background: #0b0c10; width: 100%; max-width: 1200px; height: 85vh;
+      border-radius: 16px; border: 1px solid var(--border-color);
+      display: flex; flex-direction: row; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      position: relative; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .project-modal.active .modal-content { transform: scale(1); }
+
+    .close-modal { position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 40; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .close-modal:hover { background: var(--text-highlight); color: #000; }
+
+    .modal-left { flex: 1.5; height: 100%; border-right: 1px solid var(--border-color); position: relative; background: #000; overflow: hidden; }
+    .modal-right { flex: 1; height: 100%; padding: 3rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+    /* --- CAROSELLO IMMAGINI FIXATO --- */
+    .carousel-container {
+      width: 100%; height: 100%; overflow-x: auto; overflow-y: hidden;
+      display: flex; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none;
+    }
+
+    .carousel-slide {
+      min-width: 100%; height: 100%; scroll-snap-align: start;
+      background: #000;
+      /* Abilita lo scroll verticale per le singole immagini lunghe */
+      overflow-y: auto;
+      display: flex;
+      /* align-items: flex-start forza le immagini corte a partire dall'alto, ma con margin: auto le centriamo */
+      flex-direction: column;
+      position: relative;
+    }
+
+    .carousel-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      /* margin: auto fa sì che se l'immagine è più corta del contenitore, venga centrata verticalmente */
+      margin: auto;
+    }
+
+    /* FRECCE DESKTOP */
+    .carousel-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+      width: 45px; height: 45px; border-radius: 50%; font-size: 1.5rem;
+      cursor: pointer; z-index: 25; display: none; /* Nascoste di default, visibili su Desktop */
+      align-items: center; justify-content: center; transition: all 0.3s;
+    }
+    .carousel-arrow:hover { background: var(--text-highlight); color: #000; }
+    .carousel-arrow.prev { left: 15px; }
+    .carousel-arrow.next { right: 15px; }
+    .carousel-arrow.disabled { opacity: 0; pointer-events: none; }
+
+    /* HINT DI SCROLL DINAMICO */
+    .carousel-scroll-hint {
+      position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.75); border: 1px solid var(--text-highlight);
+      color: var(--text-highlight); padding: 0.5rem 1.2rem; border-radius: 20px;
+      font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600;
+      z-index: 25; pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
+      backdrop-filter: blur(4px); box-shadow: 0 0 15px rgba(102,252,241,0.2);
+      animation: bounceHint 2s infinite; display: flex; align-items: center; gap: 8px;
+      white-space: nowrap;
+    }
+    .carousel-scroll-hint.active { opacity: 1; }
+    @keyframes bounceHint { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 5px); } }
+
+    .carousel-nav { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 20; background: rgba(0,0,0,0.5); padding: 6px 12px; border-radius: 12px; backdrop-filter: blur(4px); }
+    .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: background 0.3s; }
+    .carousel-dot.active { background: var(--text-highlight); }
+
+    .carousel-global-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 5, 0.7); display: flex; align-items: center; justify-content: center; z-index: 15; opacity: 0; pointer-events: none; }
+    .carousel-global-overlay.flash { animation: flashCaption 1.8s forwards cubic-bezier(0.4, 0, 0.2, 1); }
+    .caption-text { color: #fff; font-family: var(--font-mono); font-size: clamp(1.2rem, 3vw, 1.6rem); font-weight: 700; text-align: center; padding: 1rem 2rem; border: 1px solid var(--text-highlight); background: rgba(11, 12, 16, 0.9); border-radius: 8px; box-shadow: 0 0 30px rgba(102, 252, 241, 0.2); }
+
+    .modal-title { font-family: var(--font-mono); font-size: 2rem; color: #fff; margin-bottom: 1rem; line-height: 1.2; }
+    .modal-desc { font-size: 0.95rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 2rem; white-space: pre-line; }
+    .modal-desc strong { color: var(--text-highlight); font-weight: 600; }
+
+    .tech-stack-title { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+    .modal-badges { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; }
+    .modal-badge { background: rgba(102, 252, 241, 0.08); border: 1px solid rgba(102, 252, 241, 0.2); color: var(--text-highlight); padding: 0.4rem 0.8rem; border-radius: 6px; font-family: var(--font-mono); font-size: 0.8rem; }
+
+    #m-link-container { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem; }
+    .modal-link-btn, .modal-link-btn-outline { display: inline-flex; justify-content: center; align-items: center; padding: 0.9rem 1.5rem; font-family: var(--font-mono); font-size: 0.9rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.1s, background 0.3s; width: fit-content; }
+    .modal-link-btn { background: var(--text-highlight); color: #050505; }
+    .modal-link-btn:hover { background: #fff; }
+    .modal-link-btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+    .modal-link-btn-outline:hover { border-color: var(--text-highlight); color: var(--text-highlight); }
+
+    /* --- FOOTER (Stile Home/Profilo) --- */
+    footer { background-color: rgba(5, 5, 5, 0.95); border-top: 1px solid var(--border-color); padding: 2rem 5%; margin-top: auto; z-index: 10; position: relative; }
+    .footer-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-item { display: flex; align-items: center; gap: 0.8rem; color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.9rem; }
+    .footer-item a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease; display: flex; align-items: center; gap: 0.5rem; }
+    .footer-item a:hover { color: var(--text-highlight); }
+    .location-icon, .email-icon { width: 20px; height: 20px; color: var(--text-secondary); transition: color 0.3s ease; }
+    .linkedin-icon { width: 22px; height: 22px; fill: var(--text-secondary); transition: fill 0.3s ease; }
+    .footer-item:hover .location-icon, .footer-item a:hover .email-icon { color: var(--text-highlight); }
+    .footer-item a:hover .linkedin-icon { fill: var(--text-highlight); }
+    .privacy-links { display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
+    .copyright { text-align: center; width: 100%; margin-top: 2rem; font-size: 0.8rem; color: #475569; font-family: var(--font-mono); }
+
+    @keyframes pulseText { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes flashCaption { 0% { opacity: 0; backdrop-filter: blur(0px); } 15% { opacity: 1; backdrop-filter: blur(4px); } 75% { opacity: 1; backdrop-filter: blur(4px); } 100% { opacity: 0; backdrop-filter: blur(0px); } }
+
+    /* --- RESPONSIVE DESKTOP --- */
+    @media (min-width: 900px) {
+      .carousel-arrow { display: flex; } /* Frecce visibili solo da PC */
+    }
+
+    /* --- RESPONSIVE MOBILE STRATEGICO --- */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      nav { padding: 1.5rem; height: auto; }
+      header { padding-top: 6rem; }
+
+      .folder-stack { width: 260px; height: 250px; transform: rotateY(-20deg) rotateX(10deg); }
+      .projects-grid { grid-template-columns: 1fr; }
+
+      /* Modale Mobile */
+      .project-modal { align-items: flex-end; }
+      .modal-content { flex-direction: column; height: 95vh; max-height: 95vh; border-radius: 20px 20px 0 0; border: 1px solid var(--border-color); border-bottom: none; transform: translateY(100%); }
+      .project-modal.active .modal-content { transform: translateY(0); }
+
+      /* Aggiunta barra stile iOS in alto al modale mobile */
+      .modal-content::after { content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 40px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; z-index: 20; display: block; }
+
+      .close-modal { top: 15px; right: 15px; background: rgba(0,0,0,0.8); }
+
+      /* Ridistribuzione spazi: 45% immagini, 55% scroll testo */
+      .modal-left { flex: none; height: 45vh; border-right: none; border-bottom: 1px solid var(--border-color); }
+      .modal-right { flex: 1; padding: 2rem 1.5rem; }
+
+      /* Tasti Link al 100% della larghezza */
+      .modal-link-btn, .modal-link-btn-outline { width: 100%; }
+
+      /* Footer Mobile a colonna a sinistra */
+      .footer-container { flex-direction: column; align-items: flex-start; text-align: left; gap: 1.5rem; }
+      .privacy-links { align-items: flex-start; }
+    }
+
+    /*======STILI BANNER PER I COOKIE=====*/
+
+    #cookie-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(8px);
+      z-index: 9999; display: none; /* Gestito dal JS */
+      align-items: center; justify-content: center;
+    }
+
+    #cookie-banner {
+      background: #0b0d10;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2.5rem;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      display: flex; flex-direction: column; gap: 1.5rem;
+      text-align: center;
+      transform: translateY(20px);
+      animation: slideUpCookie 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes slideUpCookie {
+      to { transform: translateY(0); }
+    }
+
+    .cookie-title {
+      color: #fff; font-family: var(--font-mono); font-size: 1.5rem; margin-bottom: 0.8rem;
+    }
+
+    .cookie-text {
+      color: var(--text-secondary); font-size: 0.95rem; font-family: var(--font-main); line-height: 1.5;
+    }
+
+    .cookie-text a {
+      color: var(--text-highlight); text-decoration: none; border-bottom: 1px dashed var(--text-highlight); padding-bottom: 2px;
+    }
+
+    .cookie-buttons {
+      display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;
+    }
+
+    @media (min-width: 600px) {
+      .cookie-buttons { flex-direction: row; justify-content: space-between; }
+      .btn-cookie { flex: 1; }
+    }
+
+    .btn-cookie {
+      padding: 0.9rem 1.2rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; width: 100%;
+    }
+
+    .btn-accept {
+      background: var(--text-highlight); color: #050505; border: none;
+    }
+    .btn-accept:hover {
+      background: #fff; box-shadow: 0 0 15px rgba(102, 252, 241, 0.4);
+    }
+
+    .btn-reject {
+      background: transparent; color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2);
+    }
+    .btn-reject:hover {
+      border-color: var(--text-highlight); color: var(--text-highlight);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" class="mobile-link" data-text="Home"><span class="text-content"></span><span class="menu-cursor"></span></a>
+  <a href="profilo.html" class="mobile-link" data-text="Profilo"><span class="text-content"></span><span class="menu-cursor"></span></a>
+  <a href="progetti.html" class="mobile-link active-page" data-text="Progetti"><span class="text-content">Progetti</span><span class="menu-cursor"></span></a>
+</div>
+
+<nav>
+  <a href="index.html" class="logo">ADF.</a>
+  <ul class="nav-links">
+    <li><a href="profilo.html" data-text="Profilo"><span>Profilo</span></a></li>
+    <li><a href="progetti.html" class="active" data-text="Progetti"><span>Progetti</span></a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="projects_en.html" class="lang-switch" title="Switch to English">EN</a>
+    <div class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<header>
+  <h1 id="title-header" data-value="Il mio Portfolio">Il mio Portfolio</h1>
+  <div class="subtitle" id="subtitle-header" data-value="Esplora i miei progetti">Esplora i miei progetti</div>
+</header>
+
+<div id="stack-view">
+  <div class="folder-stack" id="folderStack">
+    <div class="stack-item"><div class="stack-line title"></div><div class="stack-line"></div><div class="stack-line short"></div><div class="stack-line"></div></div>
+    <div class="stack-item"><div class="stack-line title"></div><div class="stack-line"></div><div class="stack-line short"></div></div>
+    <div class="stack-item"><div class="stack-line title"></div><div class="stack-line"></div><div class="stack-line short"></div><div class="stack-line"></div></div>
+    <div class="stack-item"><div class="stack-line title"></div><div class="stack-line"></div><div class="stack-line short"></div></div>
+
+    <div id="lock-container">
+      <svg class="lock-icon-svg" viewBox="0 0 100 100">
+        <path class="lock-shackle" d="M30,45 V25 A20,20 0 0,1 70,25 V45" fill="none" stroke-width="8" />
+        <rect x="20" y="45" width="60" height="45" rx="5" fill="none" stroke-width="8" />
+        <circle cx="50" cy="65" r="5" fill="var(--text-highlight)" />
+        <path d="M50,70 V78" stroke="var(--text-highlight)" stroke-width="6" />
+      </svg>
+    </div>
+  </div>
+
+  <div class="click-hint" id="clickHint">Clicca per sbloccare l'archivio</div>
+</div>
+
+<div class="projects-container" id="projectsContainer">
+  <div class="projects-grid" id="projectsGrid"></div>
+</div>
+
+<div class="project-modal" id="projectModal">
+  <div class="modal-content">
+    <button class="close-modal" id="closeModal">&times;</button>
+
+    <div class="modal-left">
+      <div class="carousel-container" id="m-carousel"></div>
+
+      <button class="carousel-arrow prev" id="c-prev">&#10094;</button>
+      <button class="carousel-arrow next" id="c-next">&#10095;</button>
+
+      <div class="carousel-scroll-hint" id="m-scroll-hint">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        Scorri l'immagine
+      </div>
+
+      <div class="carousel-global-overlay" id="m-carousel-overlay">
+        <div class="caption-text" id="m-carousel-caption">Titolo Immagine</div>
+      </div>
+
+      <div class="carousel-nav" id="m-dots"></div>
+    </div>
+
+    <div class="modal-right">
+      <h2 class="modal-title" id="m-title"></h2>
+      <div class="tech-stack-title">Stack Tecnologico</div>
+      <div class="modal-badges" id="m-tech"></div>
+      <div class="tech-stack-title">Dettagli Progetto</div>
+      <p class="modal-desc" id="m-desc"></p>
+      <div id="m-link-container"></div>
+    </div>
+  </div>
+</div>
+
+<div id="cookie-overlay">
+  <div id="cookie-banner">
+    <div>
+      <div class="cookie-title">Gestione Cookie</div>
+      <div class="cookie-text">
+        Questo sito utilizza cookie tecnici strettamente necessari e, con il tuo consenso, cookie analitici (Google Analytics) per capire come viene visitato il portfolio.<br><br>
+        Puoi leggere i dettagli nella <a href="privacy.html" title="Privacy Policy">Privacy Policy</a> e nella <a href="cookie.html" title="Cookie Policy">Cookie Policy</a>.
+      </div>
+    </div>
+    <div class="cookie-buttons">
+      <button class="btn-cookie btn-reject" onclick="handleCookies('reject')">Solo essenziali</button>
+      <button class="btn-cookie btn-accept" onclick="handleCookies('accept')">Accetta tutti</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-item">
+      <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+      <span>Ferrara, Italia</span>
+    </div>
+    <div class="footer-item">
+      <a href="mailto:andreadelfatto@gmail.com">
+        <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        andreadelfatto@gmail.com
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="https://linkedin.com/in/TUO-PROFILO-LINKEDIN" target="_blank" rel="noopener noreferrer">
+        <svg class="linkedin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+    <div class="footer-item privacy-links">
+      <a href="privacy.html" class="privacy" title="Privacy Policy">Privacy Policy</a>
+      <a href="cookie.html" class="cookie" title="Cookie Policy">Cookie Policy</a>
+    </div>
+  </div>
+  <div class="copyright">© 2026 Andrea Del Fatto. Tutti i diritti riservati.</div>
+</footer>
+
+<script>
+  // --- UNLOCK LOGIC ---
+  const lockContainer = document.getElementById('lock-container');
+  const stackView = document.getElementById('stack-view');
+  const folderStack = document.getElementById('folderStack');
+  const projectsContainer = document.getElementById('projectsContainer');
+  const hint = document.getElementById('clickHint');
+
+  function unlockArchive() {
+    lockContainer.classList.add('unlocked');
+    hint.classList.add('fade-out');
+
+    setTimeout(() => {
+      folderStack.classList.add('spread');
+      lockContainer.classList.add('fade-out');
+    }, 400);
+
+    setTimeout(() => {
+      stackView.style.display = 'none';
+      projectsContainer.classList.add('visible');
+      const cards = document.querySelectorAll('.folder-wrapper');
+      cards.forEach((card, index) => {
+        setTimeout(() => { card.classList.add('animate-in'); }, index * 100);
+      });
+    }, 1000);
+  }
+
+  lockContainer.addEventListener('click', (e) => { e.stopPropagation(); unlockArchive(); });
+  folderStack.addEventListener('click', unlockArchive);
+
+  // --- DATABASE ---
+  const projects = [
+    {
+      id: 1,
+      title: "Village Vista Manager",
+      year: "2024",
+      shortDesc: "Gestionale Enterprise per Villaggi Turistici.",
+      fullDesc: "Applicazione desktop enterprise per la gestione completa di villaggi turistici, sviluppata con un focus sull'ingegneria del software e valutata con il massimo dei voti.\n\nIl sistema include:\n- <strong>GUI Front-Desk:</strong> Interfaccia intuitiva per il check-in/out rapido dei clienti.\n- <strong>Dashboard Amministrativa:</strong> Strumenti per il controllo risorse, assegnazione bungalow e gestione stato pulizie.\n- <strong>Area Dipendenti:</strong> Accesso riservato con permessi granulari.\n\nIl cuore del progetto è un'architettura <strong>Object-Oriented</strong> robusta, basata sul pattern <strong>MVC</strong> (Model-View-Controller) per la separazione delle responsabilità e sul pattern <strong>DAO</strong> per l'astrazione del database SQL.",
+      gallery: [
+        { src: "img/villagevistahome_preview.png", title: "Homepage Front-Desk" },
+        { src: "img/villagevista_showroom_preview.png", title: "Visualizzazione Alloggi" },
+        { src: "img/villagevista_management_preview.png", title: "Dashboard Management" },
+        { src: "img/villagevista_login_host_preview.png", title: "Login Portale (Host)" },
+        { src: "img/villagevista_login_admin_preview.png", title: "Login Portale (Admin & Dipendenti)" }
+      ],
+      tech: ["Java", "SQL", "MVC Pattern", "DAO Pattern", "Swing/JavaFX", "OOP"],
+      link: "#",
+      github: "https://github.com/anddel00/VillageVista",
+      githubFront: "#",
+      githubBack: "#"
+    },
+    {
+      id: 2,
+      title: "Social Network Eventi",
+      year: "2024",
+      shortDesc: "Piattaforma social & QA Testing.",
+      fullDesc: "Progetto presentato all'esame di Ingegneria del Software, valutato con il massimo dei voti.\n\nIl ciclo di vita del software (SDLC) ha seguito standard industriali, includendo una fase di testing rigorosa documentata tramite template professionali.\n\n<strong>Ruolo e Responsabilità:</strong>\nIn qualità di <strong>QA (Quality Assurance)</strong>, ho redatto ed eseguito Test Case funzionali per validare le feature critiche.\nIl mio team (Watchdogs) ha curato l'intera implementazione delle componenti Core:\n- <strong>Frontend & DB:</strong> Sviluppo Home Page e architettura Database.\n- <strong>Advanced Search:</strong> Logica complessa per la Barra di Ricerca e il sistema di Filtri dinamici.",
+      gallery: [
+        { src: "img/progettoeventi_preview.png", title: "Home Network Eventi" },
+        { src: "img/progettoeventi_test1.png", title: "Test Case: Filtri dinamici" },
+        { src: "img/progettoeventi_test2.png", title: "Test Case: Search bar" }
+      ],
+      tech: ["Java", "SQL", "QA Testing", "Software Lifecycle", "Teamwork"],
+      link: "#",
+      githubFront: "https://github.com/anddel00/WatchDogs_Front",
+      githubBack: "https://github.com/anddel00/WatchDogs_Back"
+    },
+    {
+      id: 3,
+      title: "Adelino Libero Website",
+      year: "2025",
+      shortDesc: "Sito Web Vetrina High-Performance.",
+      fullDesc: "Sito web vetrina sviluppato per un commerciante privato nel settore giardinaggio. L'obiettivo era massimizzare la visibilità online e la conversione utenti.\n\nHo curato ogni dettaglio tecnico:\n- <strong>CSS Avanzato:</strong> Design ricercato e layout responsive senza framework pesanti.\n- <strong>Strategia CTA:</strong> Call-to-Action posizionate strategicamente per guidare l'utente al contatto.\n- <strong>SEO Tecnica:</strong> Ottimizzazione profonda del codice per garantire indicizzazione rapida e alta vendibilità nel mercato locale.",
+      gallery: [
+        { src: "img/adelinolibero_preview.png", title: "Vetrina Homepage" },
+        { src: "img/adelinolibero_preview_2.png", title: "Dettaglio Offerta" },
+        { src: "img/adelinolibero_preview_3.png", title: "Catalogo" }
+      ],
+      tech: ["HTML5", "CSS3 Avanzato", "SEO Strategy", "UX/UI Design"],
+      link: "https://liberoadelino.it",
+      githubFront: "#",
+      githubBack: "#"
+    },
+    {
+      id: 4,
+      title: "CercaUniversità (CINECA)",
+      year: "2025",
+      shortDesc: "Refactoring Portale Ministeriale (MUR).",
+      fullDesc: "Progetto di Tesi svolto presso gli uffici CINECA. Si tratta di un massiccio refactoring UI/UX del portale 'Cerca Università' del Ministero dell'Istruzione e del Merito.\n\nIl flusso di lavoro ha compreso:\n1. <strong>Prototipazione:</strong> Design Lo-Fi con Balsamiq e Hi-Fi con Figma.\n2. <strong>Sviluppo:</strong> Implementazione frontend moderna tramite HTML, CSS e JavaScript.\n3. <strong>Testing & Audit:</strong> Analisi approfondita con <strong>Google Lighthouse</strong> per certificare prestazioni, SEO e conformità agli standard di accessibilità <strong>WCAG</strong>.",
+      gallery: [
+        { src: "img/cercauniversita_balsamiq.png", title: "Prototipo Lo-Fi (Balsamiq)" },
+        { src: "img/cercauniversita_figma.png", title: "Prototipo Hi-Fi (Figma)" },
+        { src: "img/cercauniversita_preview.png", title: "UI Frontend Finale" }
+      ],
+      tech: ["WAI-ARIA", "Figma", "Balsamiq", "Google Lighthouse", "Frontend Eng."],
+      link: "#",
+      github: "https://github.com/anddel00/Progetto_tesi",
+      githubFront: "#",
+      githubBack: "#"
+    },
+    {
+      id: 5,
+      title: "Portfolio Senior Engineer",
+      year: "2026",
+      shortDesc: "Portfolio Personale Sicuro & GDPR Compliant.",
+      fullDesc: "Sviluppo completo di un portfolio per un Senior Mechanical Engineer. Il sito presenta una landing page, un'area profilo e un'innovativa <strong>Area Passioni</strong> protetta. \n Alcune tab e informazioni sono state omesse nella preview per motivi di privacy. \n\nCaratteristiche Tecniche:\n- <strong>Sicurezza Backend:</strong> Protezione area riservata con password personalizzata, verifica lato server (PHP) e hashing per integrità dati.\n- <strong>Analytics:</strong> Configurazione avanzata di Google Analytics 4 con tracciamento 'events' custom e consulenza al cliente.\n- <strong>Compliance:</strong> Gestione GDPR/Cookie completa tramite Iubenda.\n- <strong>Deploy:</strong> Messa in produzione con certificato SSL e protocollo HTTPS.",
+      gallery: [
+        { src: "img/DavideProfilo.png", title: "Profilo " }
+      ],
+      tech: ["PHP", "Hashing/Security", "Google Analytics 4", "Iubenda", "SSL/HTTPS"],
+      link: "#",
+      githubFront: "#",
+      githubBack: "#"
+    },
+    {
+      id: 6,
+      title: "Questo Portfolio",
+      year: "Work in Progress",
+      shortDesc: "Work in Progress.",
+      fullDesc: "Il sito che stai navigando è un esempio vivo delle mie competenze attuali.\n\nCostruito da zero con un approccio 'Mobile-First', utilizza tecnologie web moderne per garantire fluidità, estetica e pulizia del codice, riflettendo la mia attenzione per i dettagli e la performance.",
+      gallery: [
+        { src: "img/fotoprofilo.jpg", title: "Work in Progress..." }
+      ],
+      tech: ["HTML5", "CSS3 Moderno", "JavaScript ES6", "Glassmorphism"],
+      link: "#",
+      githubFront: "#",
+      githubBack: "#"
+    }
+  ];
+
+  const grid = document.getElementById('projectsGrid');
+  projects.forEach((p, index) => {
+    const card = document.createElement('div');
+    card.className = 'folder-wrapper';
+
+    card.innerHTML = `
+      <div class="folder-tab"></div>
+      <div class="folder-body" onclick="openModal(${index})">
+        <div class="folder-header-row">
+            <span class="folder-id">/PROJECT_0${index + 1}</span>
+            <span class="folder-id">${p.year}</span>
+        </div>
+        <div class="folder-content-main">
+          <h3 class="folder-title">${p.title}</h3>
+          <p class="folder-preview-text">${p.shortDesc}</p>
+        </div>
+        <div class="folder-action"><span>Apri Cartella</span> ↗</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // --- MODAL & CAROUSEL LOGIC ---
+  const modal = document.getElementById('projectModal');
+  const closeModalBtn = document.getElementById('closeModal');
+  const mTitle = document.getElementById('m-title');
+  const mDesc = document.getElementById('m-desc');
+  const mTech = document.getElementById('m-tech');
+  const mLinkContainer = document.getElementById('m-link-container');
+  const mCarousel = document.getElementById('m-carousel');
+  const mDots = document.getElementById('m-dots');
+  const carouselOverlay = document.getElementById('m-carousel-overlay');
+  const carouselCaption = document.getElementById('m-carousel-caption');
+
+  // Nodi frecce e scroll hint
+  const btnPrev = document.getElementById('c-prev');
+  const btnNext = document.getElementById('c-next');
+  const scrollHint = document.getElementById('m-scroll-hint');
+
+  let currentSlideIndex = -1;
+  let currentProjectImages = [];
+
+  window.openModal = function(index) {
+    const p = projects[index];
+    mTitle.textContent = p.title;
+    mDesc.innerHTML = p.fullDesc;
+    mTech.innerHTML = p.tech.map(t => `<span class="modal-badge">${t}</span>`).join('');
+
+    mLinkContainer.innerHTML = '';
+    if (p.link && p.link !== '#') { mLinkContainer.innerHTML += `<a href="${p.link}" target="_blank" class="modal-link-btn">Visita Sito Online ↗</a>`; }
+    if (p.githubFront && p.githubFront !== '#') { mLinkContainer.innerHTML += `<a href="${p.githubFront}" target="_blank" class="modal-link-btn-outline">Repository GitHub - Frontend ↗</a>`; }
+    if (p.githubBack && p.githubBack !== '#') { mLinkContainer.innerHTML += `<a href="${p.githubBack}" target="_blank" class="modal-link-btn-outline">Repository GitHub - Backend ↗</a>`; }
+    if (p.github && p.github !== '#') { mLinkContainer.innerHTML += `<a href="${p.github}" target="_blank" class="modal-link-btn-outline">Repository GitHub ↗</a>`; }
+
+    mCarousel.innerHTML = ''; mDots.innerHTML = '';
+    scrollHint.classList.remove('active');
+
+    currentProjectImages = p.gallery && p.gallery.length > 0 ? p.gallery : [{src: 'img/placeholder_project.jpg', title: 'Anteprima'}];
+
+    currentProjectImages.forEach((imgObj, i) => {
+      const imgSrc = typeof imgObj === 'string' ? imgObj : imgObj.src;
+      const imgTitle = typeof imgObj === 'string' ? 'Dettaglio Progetto' : imgObj.title;
+
+      const slide = document.createElement('div');
+      slide.className = 'carousel-slide';
+
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.className = 'carousel-img';
+      img.alt = imgTitle;
+
+      // Controllo se l'immagine è scrollabile quando finisce di caricare
+      img.onload = () => {
+        if (i === currentSlideIndex) {
+          checkScrollability(slide);
+        }
+      };
+
+      // Se l'utente scrolla l'immagine, nasconde l'hint
+      slide.onscroll = () => {
+        if (slide.scrollTop > 10) scrollHint.classList.remove('active');
+      };
+
+      slide.appendChild(img);
+      mCarousel.appendChild(slide);
+
+      const dot = document.createElement('div');
+      dot.className = i === 0 ? 'carousel-dot active' : 'carousel-dot';
+      dot.onclick = () => { mCarousel.scrollTo({ left: mCarousel.offsetWidth * i, behavior: 'smooth' }); };
+      mDots.appendChild(dot);
+    });
+
+    mCarousel.scrollLeft = 0;
+    currentSlideIndex = 0;
+    triggerCaptionFlash(0);
+    updateArrows(0);
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  function checkScrollability(slideElement) {
+    if (slideElement && slideElement.scrollHeight > slideElement.clientHeight + 10 && slideElement.scrollTop === 0) {
+      scrollHint.classList.add('active');
+    } else {
+      scrollHint.classList.remove('active');
+    }
+  }
+
+  function updateArrows(idx) {
+    if (idx <= 0) btnPrev.classList.add('disabled'); else btnPrev.classList.remove('disabled');
+    if (idx >= currentProjectImages.length - 1) btnNext.classList.add('disabled'); else btnNext.classList.remove('disabled');
+  }
+
+  // Eventi click frecce Desktop
+  btnPrev.onclick = () => {
+    if (currentSlideIndex > 0) mCarousel.scrollTo({ left: mCarousel.offsetWidth * (currentSlideIndex - 1), behavior: 'smooth' });
+  };
+  btnNext.onclick = () => {
+    if (currentSlideIndex < currentProjectImages.length - 1) mCarousel.scrollTo({ left: mCarousel.offsetWidth * (currentSlideIndex + 1), behavior: 'smooth' });
+  };
+
+  function triggerCaptionFlash(idx) {
+    if (!currentProjectImages[idx]) return;
+    const title = typeof currentProjectImages[idx] === 'string' ? 'Dettaglio Progetto' : currentProjectImages[idx].title;
+    carouselCaption.textContent = title;
+
+    carouselOverlay.classList.remove('flash');
+    void carouselOverlay.offsetWidth;
+    carouselOverlay.classList.add('flash');
+  }
+
+  mCarousel.onscroll = () => {
+    const idx = Math.round(mCarousel.scrollLeft / mCarousel.offsetWidth);
+    if (idx !== currentSlideIndex) {
+      currentSlideIndex = idx;
+      document.querySelectorAll('.carousel-dot').forEach((d, i) => { d.classList.toggle('active', i === idx); });
+      triggerCaptionFlash(idx);
+      updateArrows(idx);
+      checkScrollability(mCarousel.children[idx]);
+    }
+  };
+
+  closeModalBtn.onclick = () => { modal.classList.remove('active'); document.body.style.overflow = 'auto'; carouselOverlay.classList.remove('flash'); };
+  modal.onclick = (e) => { if(e.target === modal) { modal.classList.remove('active'); document.body.style.overflow = 'auto'; carouselOverlay.classList.remove('flash'); }};
+
+  // --- MOBILE MENU LOGIC ---
+  const hamburger = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+  let isMenuOpen = false;
+  let menuAnimVersion = 0;
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('active');
+    isMenuOpen = !isMenuOpen;
+
+    if (isMenuOpen) {
+      menuAnimVersion++;
+      animateMenuLinks(menuAnimVersion);
+    } else {
+      resetMenuLinks();
+    }
+  });
+
+  function resetMenuLinks() {
+    menuAnimVersion++;
+    mobileLinks.forEach(link => {
+      if (!link.classList.contains('active-page')) {
+        link.querySelector('.text-content').textContent = '';
+        link.querySelector('.menu-cursor').classList.remove('typing');
+      }
+    });
+  }
+
+  async function animateMenuLinks(versionId) {
+    mobileLinks.forEach(link => {
+      if (!link.classList.contains('active-page')) {
+        link.querySelector('.text-content').textContent = '';
+      }
+    });
+
+    for (let link of mobileLinks) {
+      if (versionId !== menuAnimVersion) return;
+      if (link.classList.contains('active-page')) continue;
+
+      const text = link.getAttribute('data-text');
+      const textSpan = link.querySelector('.text-content');
+      const cursorSpan = link.querySelector('.menu-cursor');
+
+      cursorSpan.classList.add('typing');
+
+      for (let i = 0; i < text.length; i++) {
+        if (versionId !== menuAnimVersion) return;
+        textSpan.textContent += text.charAt(i);
+        await new Promise(r => setTimeout(r, 50));
+      }
+
+      if (versionId !== menuAnimVersion) return;
+      cursorSpan.classList.remove('typing');
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+
+  // --- EFFETTO DECIFRAZIONE HACKER ---
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  function hackEffect(element) {
+    let iterations = 0;
+    const originalText = element.dataset.value;
+    const interval = setInterval(() => {
+      element.innerText = originalText.split("").map((letter, index) => {
+        if (index < iterations) return originalText[index];
+        return letters[Math.floor(Math.random() * 26)];
+      }).join("");
+      if (iterations >= originalText.length) clearInterval(interval);
+      iterations += 1 / 2;
+    }, 40);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const title = document.getElementById('title-header');
+    const subtitle = document.getElementById('subtitle-header');
+    hackEffect(title);
+    setTimeout(() => { hackEffect(subtitle); }, 500);
+  });
+
+  const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+
+  function loadGoogleAnalytics() {
+    const script1 = document.createElement('script');
+    script1.async = true;
+    script1.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    document.head.appendChild(script1);
+
+    const script2 = document.createElement('script');
+    script2.innerHTML = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${GA_MEASUREMENT_ID}', { 'anonymize_ip': true });
+    `;
+    document.head.appendChild(script2);
+  }
+
+  function handleCookies(choice) {
+    // Salva la scelta nel browser
+    localStorage.setItem('cookieConsent', choice);
+
+    // Nasconde l'overlay bloccante
+    document.getElementById('cookie-overlay').style.display = 'none';
+    document.body.style.overflow = 'auto'; // Riabilita lo scroll della pagina
+
+    // Se ha accettato, fai partire Analytics
+    if (choice === 'accept') { loadGoogleAnalytics(); }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const consent = localStorage.getItem('cookieConsent');
+    const overlay = document.getElementById('cookie-overlay');
+
+    if (!consent) {
+      // Se non ha ancora fatto una scelta, mostra l'overlay e blocca lo scroll
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    } else if (consent === 'accept') {
+      // Se aveva già accettato in passato, carica subito Analytics
+      loadGoogleAnalytics();
+    }
+  });
+
+</script>
+</body>
+</html>
+

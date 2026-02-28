@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Projects | Andrea Del Fatto</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #050505;
+      --text-primary: #e2e8f0;
+      --text-highlight: #66fcf1;
+      --text-secondary: #94a3b8;
+      --border-color: rgba(102, 252, 241, 0.15);
+      --folder-bg: #0a0a0a;
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    ::-webkit-scrollbar { display: none; }
+    html { scrollbar-width: none; -ms-overflow-style: none; overflow-y: scroll; scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      display: flex; flex-direction: column;
+      min-height: 100vh; overflow-x: hidden;
+      position: relative;
+    }
+
+    /* --- BACKGROUND --- */
+    .bg-grid {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px; pointer-events: none; z-index: -1;
+    }
+
+    /* --- NAVIGAZIONE --- */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 2.5rem 5%; width: 100%; position: absolute; top: 0; left: 0; z-index: 200; background: transparent;
+    }
+    .logo { font-family: var(--font-mono); font-weight: 700; font-size: 1.5rem; color: var(--text-highlight); letter-spacing: -1px; z-index: 201; text-decoration: none; line-height: 1; }
+
+    .nav-links { list-style: none; display: flex; gap: 2rem; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
+    .nav-links a { position: relative; display: inline-block; text-decoration: none; color: var(--text-primary); font-size: 1rem; font-weight: 400; overflow: hidden; }
+    .nav-links a span { display: inline-block; transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
+    .nav-links a::after { content: attr(data-text); position: absolute; left: 0; top: 100%; width: 100%; color: var(--text-highlight); transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
+    .nav-links a:hover span { transform: translateY(-100%); }
+    .nav-links a:hover::after { transform: translateY(-100%); }
+    .nav-links a.active span { transform: translateY(-100%); }
+    .nav-links a.active::after { transform: translateY(-100%); color: var(--text-highlight); }
+
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; z-index: 201; }
+    .lang-switch { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: var(--text-primary); text-decoration: none; border: 1px solid var(--border-color); padding: 0.4rem 0.8rem; border-radius: 6px; background: rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+    .lang-switch:hover { color: var(--text-highlight); border-color: var(--text-highlight); background: transparent; box-shadow: 0 0 15px rgba(102, 252, 241, 0.3); }
+
+    .hamburger { display: none; cursor: pointer; z-index: 201; width: 30px; height: 20px; position: relative; }
+    .hamburger span { display: block; position: absolute; height: 2px; width: 100%; background: var(--text-highlight); border-radius: 9px; transition: .25s ease-in-out; }
+    .hamburger span:nth-child(1) { top: 0px; } .hamburger span:nth-child(2) { top: 9px; } .hamburger span:nth-child(3) { top: 18px; }
+    .hamburger.open span:nth-child(1) { top: 9px; transform: rotate(135deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; left: -60px; }
+    .hamburger.open span:nth-child(3) { top: 9px; transform: rotate(-135deg); }
+
+    /* Mobile Menu */
+    .mobile-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(20px); z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+    .mobile-menu.active { opacity: 1; pointer-events: all; }
+    .mobile-link { font-family: var(--font-mono); font-size: 2rem; color: var(--text-primary); text-decoration: none; margin: 1.5rem 0; position: relative; }
+    .mobile-link:hover { color: var(--text-highlight); }
+    .menu-cursor { display: inline-block; width: 10px; height: 2rem; background-color: var(--text-highlight); vertical-align: middle; opacity: 0; }
+    .menu-cursor.typing { opacity: 1; animation: blink 1s infinite; }
+    .mobile-link.active-page .text-content { color: var(--text-highlight); }
+    .mobile-link.active-page .menu-cursor { opacity: 1; animation: blink 1s infinite; display: inline-block; }
+
+    /* --- HEADER --- */
+    header { padding: 8rem 5% 1rem 5%; text-align: center; max-width: 900px; margin: 0 auto; line-height: 1.6; }
+
+    h1 {
+      font-family: var(--font-mono);
+      font-size: clamp(1.5rem, 6vw, 2.5rem);
+      color: #fff;
+      margin-bottom: 0.5rem;
+      min-height: 3rem;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .subtitle {
+      font-size: clamp(0.8rem, 4vw, 1.1rem);
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-family: var(--font-mono);
+      min-height: 1.5rem;
+      white-space: nowrap;
+    }
+
+    /* --- STACK VIEW --- */
+    #stack-view {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 50vh; perspective: 1200px;
+      margin-bottom: 3rem; transition: opacity 0.5s ease;
+      overflow: hidden; padding: 1rem 0; position: relative;
+    }
+
+    .folder-stack {
+      position: relative; width: 280px; height: 200px;
+      margin-bottom: 4rem;
+      transform-style: preserve-3d;
+      transform: rotateY(-30deg) rotateX(10deg) translateX(-10px);
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+      cursor: pointer;
+    }
+
+    @media(hover: hover) { .folder-stack:hover { transform: rotateY(-15deg) rotateX(5deg) scale(1.02); } }
+
+    .stack-item {
+      position: absolute; width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(20, 25, 30, 0.95), rgba(10, 10, 15, 0.98));
+      border: 1px solid rgba(102, 252, 241, 0.3); border-radius: 0 12px 12px 12px;
+      box-shadow: -5px 5px 20px rgba(0,0,0,0.5);
+      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: flex; flex-direction: column; padding: 1.5rem;
+    }
+
+    .stack-item::before {
+      content: ''; position: absolute; top: -14px; left: -1px; width: 40%; height: 15px;
+      background: inherit; border: 1px solid rgba(102, 252, 241, 0.3); border-bottom: none; border-radius: 8px 8px 0 0; z-index: 1;
+    }
+
+    .stack-item:last-child { border-color: var(--text-highlight); box-shadow: 0 0 30px rgba(102, 252, 241, 0.15); }
+    .stack-item:last-child::before { border-color: var(--text-highlight); }
+
+    .stack-line { height: 6px; background: rgba(102, 252, 241, 0.15); margin-bottom: 12px; border-radius: 3px; width: 100%; }
+    .stack-line.title { height: 12px; width: 70%; background: var(--text-highlight); opacity: 0.7; margin-bottom: 25px; }
+    .stack-line.short { width: 50%; }
+
+    .stack-item:nth-child(1) { transform: translateZ(-120px) translateX(-60px); opacity: 0.5; }
+    .stack-item:nth-child(2) { transform: translateZ(-80px) translateX(-40px); opacity: 0.7; }
+    .stack-item:nth-child(3) { transform: translateZ(-40px) translateX(-20px); opacity: 0.9; }
+    .stack-item:nth-child(4) { transform: translateZ(0) translateX(0); opacity: 1; }
+
+    .folder-stack.spread .stack-item { opacity: 0; }
+    .folder-stack.spread .stack-item:nth-child(1) { transform: translate3d(-300px, -150px, -200px); }
+    .folder-stack.spread .stack-item:nth-child(2) { transform: translate3d(-150px, 150px, -100px); }
+    .folder-stack.spread .stack-item:nth-child(3) { transform: translate3d(150px, -150px, 0px); }
+    .folder-stack.spread .stack-item:nth-child(4) { transform: translate3d(300px, 100px, 100px) scale(1.5); }
+
+    /* --- LUCCHETTO --- */
+    #lock-container {
+      position: absolute; bottom: 40px; left: 50%;
+      transform: translateX(-50%) translateZ(60px);
+      z-index: 25; cursor: pointer; width: 40px; height: 40px;
+    }
+
+    .lock-icon-svg {
+      width: 100%; height: 100%; fill: rgba(0,0,0,0.5); stroke: var(--text-highlight);
+      stroke-width: 8; stroke-linecap: round; stroke-linejoin: round;
+      transition: all 0.3s ease; filter: drop-shadow(0 0 10px rgba(102, 252, 241, 0.4)); overflow: visible;
+    }
+
+    #lock-container:hover .lock-icon-svg { filter: drop-shadow(0 0 20px rgba(102, 252, 241, 0.8)); transform: scale(1.1); }
+    .lock-shackle { transform-origin: 70% 40%; transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1.5); }
+    #lock-container.unlocked .lock-shackle { transform: translateY(-10px) rotate(45deg); stroke: #fff; }
+    #lock-container.unlocked { pointer-events: none; }
+    #lock-container.fade-out { opacity: 0; transform: translateX(-50%) scale(0.5); transition: opacity 0.3s, transform 0.3s; }
+
+    .click-hint {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      color: var(--text-highlight); font-family: var(--font-mono); font-size: 0.85rem;
+      text-transform: uppercase; letter-spacing: 2px; animation: pulseText 2s infinite;
+      pointer-events: none; width: 100%; text-align: center;
+    }
+    .click-hint.fade-out { opacity: 0; transition: opacity 0.3s; }
+
+    /* --- GRIGLIA PROGETTI --- */
+    .projects-container { padding: 0 5% 5rem 5%; max-width: 1200px; margin: 0 auto; flex: 1; display: none; }
+    .projects-container.visible { display: block; }
+
+    .projects-grid { display: grid; gap: 2rem; grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .projects-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .folder-wrapper { position: relative; cursor: pointer; transition: transform 0.3s ease; opacity: 0; transform: scale(0.6) translateY(50px); }
+    .folder-wrapper.animate-in { opacity: 1; transform: scale(1) translateY(0); transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .folder-wrapper:active { transform: scale(0.98); }
+
+    .folder-tab { width: 40%; height: 14px; background: var(--folder-bg); border: 1px solid var(--border-color); border-bottom: none; border-radius: 8px 8px 0 0; margin-left: 0; position: relative; z-index: 1; transition: all 0.3s; }
+    .folder-body {
+      background: var(--folder-bg); border: 1px solid var(--border-color); border-radius: 0 12px 12px 12px; padding: 1.5rem;
+      min-height: 200px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; transition: all 0.3s;
+    }
+    .folder-wrapper:hover .folder-tab, .folder-wrapper:hover .folder-body { border-color: var(--text-highlight); background: #111; }
+
+    .folder-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); }
+    .folder-title { font-size: 1.15rem; font-weight: 600; color: #fff; margin-bottom: 0.5rem; line-height: 1.3; }
+    .folder-preview-text { font-size: 0.9rem; color: var(--text-primary); line-height: 1.4; opacity: 0.8; }
+    .folder-action { margin-top: 1.5rem; text-align: right; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-highlight); display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+
+
+    /* --- MODAL PROGETTO --- */
+    .project-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px); z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; justify-content: center; align-items: center; padding: 0; }
+    .project-modal.active { opacity: 1; pointer-events: all; }
+
+    .modal-content {
+      background: #0b0c10; width: 100%; max-width: 1200px; height: 85vh;
+      border-radius: 16px; border: 1px solid var(--border-color);
+      display: flex; flex-direction: row; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      position: relative; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .project-modal.active .modal-content { transform: scale(1); }
+
+    .close-modal { position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 40; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .close-modal:hover { background: var(--text-highlight); color: #000; }
+
+    .modal-left { flex: 1.5; height: 100%; border-right: 1px solid var(--border-color); position: relative; background: #000; overflow: hidden; }
+    .modal-right { flex: 1; height: 100%; padding: 3rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+    /* --- CAROSELLO IMMAGINI FIXATO --- */
+    .carousel-container {
+      width: 100%; height: 100%; overflow-x: auto; overflow-y: hidden;
+      display: flex; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none;
+    }
+
+    .carousel-slide {
+      min-width: 100%; height: 100%; scroll-snap-align: start;
+      background: #000;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .carousel-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: auto;
+    }
+
+    /* FRECCE DESKTOP */
+    .carousel-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+      width: 45px; height: 45px; border-radius: 50%; font-size: 1.5rem;
+      cursor: pointer; z-index: 25; display: none;
+      align-items: center; justify-content: center; transition: all 0.3s;
+    }
+    .carousel-arrow:hover { background: var(--text-highlight); color: #000; }
+    .carousel-arrow.prev { left: 15px; }
+    .carousel-arrow.next { right: 15px; }
+    .carousel-arrow.disabled { opacity: 0; pointer-events: none; }
+
+    /* HINT DI SCROLL DINAMICO */
+    .carousel-scroll-hint {
+      position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.75); border: 1px solid var(--text-highlight);
+      color: var(--text-highlight); padding: 0.5rem 1.2rem; border-radius: 20px;
+      font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600;
+      z-index: 25; pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
+      backdrop-filter: blur(4px); box-shadow: 0 0 15px rgba(102,252,241,0.2);
+      animation: bounceHint 2s infinite; display: flex; align-items: center; gap: 8px;
+      white-space: nowrap;
+    }
+    .carousel-scroll-hint.active { opacity: 1; }
+    @keyframes bounceHint { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 5px); } }
+
+    .carousel-nav { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 20; background: rgba(0,0,0,0.5); padding: 6px 12px; border-radius: 12px; backdrop-filter: blur(4px); }
+    .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: background 0.3s; }
+    .carousel-dot.active { background: var(--text-highlight); }
+
+    .carousel-global-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 5, 0.7); display: flex; align-items: center; justify-content: center; z-index: 15; opacity: 0; pointer-events: none; }
+    .carousel-global-overlay.flash { animation: flashCaption 1.8s forwards cubic-bezier(0.4, 0, 0.2, 1); }
+    .caption-text { color: #fff; font-family: var(--font-mono); font-size: clamp(1.2rem, 3vw, 1.6rem); font-weight: 700; text-align: center; padding: 1rem 2rem; border: 1px solid var(--text-highlight); background: rgba(11, 12, 16, 0.9); border-radius: 8px; box-shadow: 0 0 30px rgba(102, 252, 241, 0.2); }
+
+    .modal-title { font-family: var(--font-mono); font-size: 2rem; color: #fff; margin-bottom: 1rem; line-height: 1.2; }
+    .modal-desc { font-size: 0.95rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 2rem; white-space: pre-line; }
+    .modal-desc strong { color: var(--text-highlight); font-weight: 600; }
+
+    .tech-stack-title { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+    .modal-badges { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; }
+    .modal-badge { background: rgba(102, 252, 241, 0.08); border: 1px solid rgba(102, 252, 241, 0.2); color: var(--text-highlight); padding: 0.4rem 0.8rem; border-radius: 6px; font-family: var(--font-mono); font-size: 0.8rem; }
+
+    #m-link-container { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem; }
+    .modal-link-btn, .modal-link-btn-outline { display: inline-flex; justify-content: center; align-items: center; padding: 0.9rem 1.5rem; font-family: var(--font-mono); font-size: 0.9rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.1s, background 0.3s; width: fit-content; }
+    .modal-link-btn { background: var(--text-highlight); color: #050505; }
+    .modal-link-btn:hover { background: #fff; }
+    .modal-link-btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+    .modal-link-btn-outline:hover { border-color: var(--text-highlight); color: var(--text-highlight); }
+
+    /* --- FOOTER --- */
+    footer { background-color: rgba(5, 5, 5, 0.95); border-top: 1px solid var(--border-color); padding: 2rem 5%; margin-top: auto; z-index: 10; position: relative; }
+    .footer-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-item { display: flex; align-items: center; gap: 0.8rem; color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.9rem; }
+    .footer-item a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease; display: flex; align-items: center; gap: 0.5rem; }
+    .footer-item a:hover { color: var(--text-highlight); }
+    .location-icon, .email-icon { width: 20px; height: 20px; color: var(--text-secondary); transition: color 0.3s ease; }
+    .linkedin-icon { width: 22px; height: 22px; fill: var(--text-secondary); transition: fill 0.3s ease; }
+    .footer-item:hover .location-icon, .footer-item a:hover .email-icon { color: var(--text-highlight); }
+    .footer-item a:hover .linkedin-icon { fill: var(--text-highlight); }
+    .privacy-links { display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
+    .copyright { text-align: center; width: 100%; margin-top: 2rem; font-size: 0.8rem; color: #475569; font-family: var(--font-mono); }
+
+    @keyframes pulseText { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes flashCaption { 0% { opacity: 0; backdrop-filter: blur(0px); } 15% { opacity: 1; backdrop-filter: blur(4px); } 75% { opacity: 1; backdrop-filter: blur(4px); } 100% { opacity: 0; backdrop-filter: blur(0px); } }
+
+    /* --- RESPONSIVE DESKTOP --- */
+    @media (min-width: 900px) {
+      .carousel-arrow { display: flex; }
+    }
+
+    /* --- RESPONSIVE MOBILE STRATEGICO --- */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      nav { padding: 1.5rem; height: auto; }
+      header { padding-top: 6rem; }
+
+      .folder-stack { width: 260px; height: 250px; transform: rotateY(-20deg) rotateX(10deg); }
+      .projects-grid { grid-template-columns: 1fr; }
+
+      /* Modale Progetti Mobile */
+      .project-modal { align-items: flex-end; }
+      #contactModal { align-items: center; }
+
+      .modal-content { flex-direction: column; height: 95vh; max-height: 95vh; border-radius: 20px 20px 0 0; border: 1px solid var(--border-color); border-bottom: none; transform: translateY(100%); }
+      .project-modal.active .modal-content { transform: translateY(0); }
+      .modal-content::after { content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 40px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; z-index: 20; display: block; }
+
+      #contactModalContent::after { display: none; }
+      #contactModalContent { border-radius: 12px; border: 1px solid var(--border-color); transform: scale(0.95); }
+      .project-modal.active #contactModalContent { transform: scale(1); }
+
+      .close-modal { top: 15px; right: 15px; background: rgba(0,0,0,0.8); }
+
+      .modal-left { flex: none; height: 45vh; border-right: none; border-bottom: 1px solid var(--border-color); }
+      .modal-right { flex: 1; padding: 2rem 1.5rem; }
+
+      .modal-link-btn, .modal-link-btn-outline { width: 100%; }
+
+      /* Footer Mobile */
+      .footer-container { flex-direction: column; align-items: flex-start; text-align: left; gap: 1.5rem; }
+      .privacy-links { align-items: flex-start; }
+
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index_en.html" class="mobile-link" data-text="Home"><span class="text-content"></span><span class="menu-cursor"></span></a>
+  <a href="profile_en.html" class="mobile-link" data-text="Profile"><span class="text-content"></span><span class="menu-cursor"></span></a>
+  <a href="projects_en.html" class="mobile-link active-page" data-text="Projects"><span class="text-content">Projects</span><span class="menu-cursor"></span></a>
+</div>
+
+<nav>
+  <a href="index_en.html" class="logo">ADF.</a>
+  <ul class="nav-links">
+    <li><a href="profile_en.html" data-text="Profile"><span>Profile</span></a></li>
+    <li><a href="projects_en.html" class="active" data-text="Projects"><span>Projects</span></a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="progetti.html" class="lang-switch" title="Switch to Italian">IT</a>
+    <div class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<header>
+  <h1 id="title-header" data-value="My Portfolio">My Portfolio</h1>
+  <div class="subtitle" id="subtitle-header" data-value="Explore my projects">Explore my projects</div>
+</header>
+
+<div id="stack-view">
+  <div class="folder-stack" id="folderStack">
+    <div class="stack-item"><div class="stack-line title"></div><div class="stack-line"></div><div class="stack-line short"></div><div class="stack-line"></div></div>
+    <div class="stack-item"><div class="stack-line title"></div><div class="stack-line"></div><div class="stack-line short"></div></div>
+    <div class="stack-item"><div class="stack-line title"></div><div class="stack-line"></div><div class="stack-line short"></div><div class="stack-line"></div></div>
+    <div class="stack-item"><div class="stack-line title"></div><div class="stack-line"></div><div class="stack-line short"></div></div>
+
+    <div id="lock-container">
+      <svg class="lock-icon-svg" viewBox="0 0 100 100">
+        <path class="lock-shackle" d="M30,45 V25 A20,20 0 0,1 70,25 V45" fill="none" stroke-width="8" />
+        <rect x="20" y="45" width="60" height="45" rx="5" fill="none" stroke-width="8" />
+        <circle cx="50" cy="65" r="5" fill="var(--text-highlight)" />
+        <path d="M50,70 V78" stroke="var(--text-highlight)" stroke-width="6" />
+      </svg>
+    </div>
+  </div>
+
+  <div class="click-hint" id="clickHint">Click to unlock archive</div>
+</div>
+
+<div class="projects-container" id="projectsContainer">
+  <div class="projects-grid" id="projectsGrid"></div>
+</div>
+
+<div class="project-modal" id="projectModal">
+  <div class="modal-content">
+    <button class="close-modal" id="closeModal">&times;</button>
+
+    <div class="modal-left">
+      <div class="carousel-container" id="m-carousel"></div>
+      <button class="carousel-arrow prev" id="c-prev">&#10094;</button>
+      <button class="carousel-arrow next" id="c-next">&#10095;</button>
+      <div class="carousel-scroll-hint" id="m-scroll-hint">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        Scroll down image
+      </div>
+      <div class="carousel-global-overlay" id="m-carousel-overlay">
+        <div class="caption-text" id="m-carousel-caption">Image Title</div>
+      </div>
+      <div class="carousel-nav" id="m-dots"></div>
+    </div>
+
+    <div class="modal-right">
+      <h2 class="modal-title" id="m-title"></h2>
+      <div class="tech-stack-title">Tech Stack</div>
+      <div class="modal-badges" id="m-tech"></div>
+      <div class="tech-stack-title">Project Details</div>
+      <p class="modal-desc" id="m-desc"></p>
+      <div id="m-link-container"></div>
+    </div>
+  </div>
+</div>
+
+<div class="project-modal" id="contactModal" style="align-items: center;">
+  <div class="modal-content" id="contactModalContent" style="flex-direction: column; height: auto; max-height: 90vh; width: 90%; max-width: 450px; padding: 2.5rem; overflow-y: auto;">
+    <button class="close-modal" id="closeContactModal" style="top: 15px; right: 15px;">&times;</button>
+
+    <div id="contactModalHeader" style="text-align: center; margin-bottom: 1.5rem; width: 100%;">
+      <h2 style="font-family: var(--font-mono); color: #fff; margin-bottom: 0.5rem; font-size: 1.8rem;">Let's get in touch</h2>
+      <p style="color: var(--text-secondary); font-size: 0.95rem;">Leave your details below, and I'll get back to you shortly to arrange a chat.</p>
+    </div>
+
+    <form id="contactForm" action="https://formspree.io/f/xqedyegv" method="POST" style="width: 100%; display: flex; flex-direction: column; gap: 1.2rem;">
+
+      <div style="display: flex; flex-direction: column; gap: 0.4rem; text-align: left;">
+        <label for="name" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Name / Recruiter *</label>
+        <input type="text" id="name" name="name" required placeholder="e.g. John Doe" style="box-sizing: border-box; width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(102, 252, 241, 0.2); padding: 1rem; border-radius: 6px; color: #fff; font-family: var(--font-main); font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.4rem; text-align: left;">
+        <label for="company" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Company (Optional)</label>
+        <input type="text" id="company" name="company" placeholder="e.g. Tech Corp LLC" style="box-sizing: border-box; width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(102, 252, 241, 0.2); padding: 1rem; border-radius: 6px; color: #fff; font-family: var(--font-main); font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.4rem; text-align: left;">
+        <label for="email" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Email *</label>
+        <input type="email" id="email" name="email" required placeholder="john.doe@company.com" style="box-sizing: border-box; width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(102, 252, 241, 0.2); padding: 1rem; border-radius: 6px; color: #fff; font-family: var(--font-main); font-size: 16px;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.4rem; text-align: left;">
+        <label for="phone" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Phone (Optional)</label>
+        <input type="tel" id="phone" name="phone" placeholder="+1 234 567890" style="box-sizing: border-box; width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(102, 252, 241, 0.2); padding: 1rem; border-radius: 6px; color: #fff; font-family: var(--font-main); font-size: 16px;">
+      </div>
+
+      <button type="submit" id="submitContactBtn" style="width: 100%; background: var(--text-highlight); color: #050505; border: none; padding: 1rem; border-radius: 6px; font-weight: 700; font-family: var(--font-mono); cursor: pointer; font-size: 16px; margin-top: 0.5rem;">Send Message</button>
+    </form>
+
+    <div class="success-message" id="contactSuccessMessage" style="display: none; text-align: center; padding: 2rem 0; width: 100%;">
+      <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-highlight)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 60px; height: 60px; margin-bottom: 1.5rem;">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <h3 style="color: #fff; font-family: var(--font-mono); margin-bottom: 0.5rem; font-size: 1.5rem;">Message Sent!</h3>
+      <p id="contactSuccessText" style="color: var(--text-secondary);">Thank you, I'll be in touch soon.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-item">
+      <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+      <span>Ferrara, Italy</span>
+    </div>
+    <div class="footer-item">
+      <a href="mailto:andreadelfatto@gmail.com">
+        <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        andreadelfatto@gmail.com
+      </a>
+    </div>
+    <div class="footer-item">
+      <a href="https://linkedin.com/in/TUO-PROFILO-LINKEDIN" target="_blank" rel="noopener noreferrer">
+        <svg class="linkedin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+    <div class="footer-item iubenda-links">
+      <a href="#" class="iubenda-nostyle no-brand iubenda-noiframe iubenda-embed iubenda-noiframe" title="Privacy Policy">Privacy Policy</a>
+      <a href="#" class="iubenda-nostyle no-brand iubenda-noiframe iubenda-embed iubenda-noiframe" title="Cookie Policy">Cookie Policy</a>
+    </div>
+  </div>
+  <div class="copyright">© 2026 Andrea Del Fatto. All rights reserved.</div>
+</footer>
+
+<script>
+  // --- INIZIALIZZAZIONE OBSERVER PER ANIMAZIONI ---
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  const bottomCta = document.querySelector('.bottom-cta');
+  if(bottomCta) observer.observe(bottomCta);
+
+  // --- UNLOCK LOGIC ---
+  const lockContainer = document.getElementById('lock-container');
+  const stackView = document.getElementById('stack-view');
+  const folderStack = document.getElementById('folderStack');
+  const projectsContainer = document.getElementById('projectsContainer');
+  const hint = document.getElementById('clickHint');
+
+  function unlockArchive() {
+    lockContainer.classList.add('unlocked');
+    hint.classList.add('fade-out');
+
+    setTimeout(() => {
+      folderStack.classList.add('spread');
+      lockContainer.classList.add('fade-out');
+    }, 400);
+
+    setTimeout(() => {
+      stackView.style.display = 'none';
+      projectsContainer.classList.add('visible');
+      const cards = document.querySelectorAll('.folder-wrapper');
+      cards.forEach((card, index) => {
+        setTimeout(() => { card.classList.add('animate-in'); }, index * 100);
+      });
+    }, 1000);
+  }
+
+  lockContainer.addEventListener('click', (e) => { e.stopPropagation(); unlockArchive(); });
+  folderStack.addEventListener('click', unlockArchive);
+
+  // --- DATABASE ---
+  const projects = [
+    {
+      id: 1,
+      title: "Village Vista Manager",
+      year: "2024",
+      shortDesc: "Enterprise Management System for Holiday Resorts.",
+      fullDesc: "Enterprise desktop application for comprehensive resort management, developed with a focus on software engineering principles and awarded top marks.\n\nThe system includes:\n- <strong>Front-Desk GUI:</strong> Intuitive interface for quick guest check-in/out.\n- <strong>Admin Dashboard:</strong> Tools for resource tracking, bungalow assignment, and cleaning status management.\n- <strong>Employee Area:</strong> Secure access with granular permission levels.\n\nThe core of the project is a robust <strong>Object-Oriented</strong> architecture based on the <strong>MVC</strong> (Model-View-Controller) pattern for separation of concerns and the <strong>DAO</strong> pattern for SQL database abstraction.",
+      gallery: [
+        { src: "img/villagevistahome_preview.png", title: "Front-Desk Homepage" },
+        { src: "img/villagevista_showroom_preview.png", title: "Accommodation View" },
+        { src: "img/villagevista_management_preview.png", title: "Management Dashboard" },
+        { src: "img/villagevista_login_host_preview.png", title: "Portal Login (Host)" },
+        { src: "img/villagevista_login_admin_preview.png", title: "Portal Login (Admin & Staff)" }
+      ],
+      tech: ["Java", "SQL", "MVC Pattern", "DAO Pattern", "Swing/JavaFX", "OOP"],
+      link: "#",
+      github: "https://github.com/anddel00/VillageVista",
+      githubFront: "#",
+      githubBack: "#"
+    },
+    {
+      id: 2,
+      title: "Event Social Network",
+      year: "2024",
+      shortDesc: "Social Platform & QA Testing.",
+      fullDesc: "Project developed for the Software Engineering course, earning the highest possible grade.\n\nThe Software Development Life Cycle (SDLC) followed industry standards, including a rigorous testing phase documented via professional templates.\n\n<strong>Role and Responsibilities:</strong>\nAs <strong>QA (Quality Assurance)</strong>, I drafted and executed functional Test Cases to validate critical features.\nMy team (Watchdogs) managed the full implementation of the Core components:\n- <strong>Frontend & DB:</strong> Home Page development and Database architecture.\n- <strong>Advanced Search:</strong> Complex logic for the Search Bar and dynamic Filter system.",
+      gallery: [
+        { src: "img/progettoeventi_preview.png", title: "Events Network Home" },
+        { src: "img/progettoeventi_test1.png", title: "Test Case: Dynamic Filters" },
+        { src: "img/progettoeventi_test2.png", title: "Test Case: Search Bar" }
+      ],
+      tech: ["Java", "SQL", "QA Testing", "Software Lifecycle", "Teamwork"],
+      link: "#",
+      githubFront: "https://github.com/anddel00/WatchDogs_Front",
+      githubBack: "https://github.com/anddel00/WatchDogs_Back"
+    },
+    {
+      id: 3,
+      title: "Adelino Libero Website",
+      year: "2025",
+      shortDesc: "High-Performance Showcase Website.",
+      fullDesc: "Showcase website developed for a private retailer in the gardening sector. The goal was to maximize online visibility and user conversion rates.\n\nI meticulously handled every technical detail:\n- <strong>Advanced CSS:</strong> Sophisticated, responsive layout built without heavy frameworks.\n- <strong>CTA Strategy:</strong> Strategically placed Call-to-Actions to guide users towards contacting the business.\n- <strong>Technical SEO:</strong> Deep code optimization to ensure rapid indexing and high marketability in the local area.",
+      gallery: [
+        { src: "img/adelinolibero_preview.png", title: "Homepage Showcase" },
+        { src: "img/adelinolibero_preview_2.png", title: "Offer Details" },
+        { src: "img/adelinolibero_preview_3.png", title: "Product Catalog" }
+      ],
+      tech: ["HTML5", "Advanced CSS3", "SEO Strategy", "UX/UI Design"],
+      link: "https://liberoadelino.it",
+      githubFront: "#",
+      githubBack: "#"
+    },
+    {
+      id: 4,
+      title: "CercaUniversità (CINECA)",
+      year: "2025",
+      shortDesc: "Governmental Portal Refactoring (MUR).",
+      fullDesc: "Thesis project completed at CINECA. This involved a massive UI/UX refactoring of the 'Cerca Università' portal for the Italian Ministry of Education and Merit.\n\nThe workflow included:\n1. <strong>Prototyping:</strong> Lo-Fi design using Balsamiq and Hi-Fi prototyping with Figma.\n2. <strong>Development:</strong> Modern frontend implementation using HTML, CSS, and JavaScript.\n3. <strong>Testing & Auditing:</strong> In-depth analysis using <strong>Google Lighthouse</strong> to certify performance, SEO, and strict compliance with <strong>WCAG</strong> accessibility standards.",
+      gallery: [
+        { src: "img/cercauniversita_balsamiq.png", title: "Lo-Fi Prototype (Balsamiq)" },
+        { src: "img/cercauniversita_figma.png", title: "Hi-Fi Prototype (Figma)" },
+        { src: "img/cercauniversita_preview.png", title: "Final Frontend UI" }
+      ],
+      tech: ["WAI-ARIA", "Figma", "Balsamiq", "Google Lighthouse", "Frontend Eng."],
+      link: "#",
+      github: "https://github.com/anddel00/Progetto_tesi",
+      githubFront: "#",
+      githubBack: "#"
+    },
+    {
+      id: 5,
+      title: "Senior Engineer Portfolio",
+      year: "2026",
+      shortDesc: "Secure & GDPR Compliant Personal Portfolio.",
+      fullDesc: "Comprehensive development of a portfolio for a Senior Mechanical Engineer. The site features a landing page, a profile area, and an innovative, secure <strong>Passions Area</strong>. \n Some tabs and specific information have been omitted in the preview for privacy reasons.\n\nTechnical Features:\n- <strong>Backend Security:</strong> Private area protected by custom passwords, server-side verification (PHP), and data hashing for integrity.\n- <strong>Analytics:</strong> Advanced Google Analytics 4 configuration with custom 'events' tracking and client consulting.\n- <strong>Compliance:</strong> Full GDPR/Cookie management implemented via Iubenda.\n- <strong>Deployment:</strong> Production launch with SSL certificate and HTTPS protocol.",
+      gallery: [
+        { src: "img/DavideProfilo.png", title: "Profile Area" }
+      ],
+      tech: ["PHP", "Hashing/Security", "Google Analytics 4", "Iubenda", "SSL/HTTPS"],
+      link: "#",
+      githubFront: "#",
+      githubBack: "#"
+    },
+    {
+      id: 6,
+      title: "This Very Portfolio",
+      year: "Work in Progress",
+      shortDesc: "Work in Progress.",
+      fullDesc: "The site you are currently browsing is a live demonstration of my current skill set.\n\nBuilt entirely from scratch using a 'Mobile-First' approach, it leverages modern web technologies to guarantee a fluid experience, appealing aesthetics, and clean code, reflecting my strong attention to detail and performance.",
+      gallery: [
+        { src: "img/fotoprofilo.jpg", title: "Work in Progress..." }
+      ],
+      tech: ["HTML5", "Modern CSS3", "JavaScript ES6", "Glassmorphism"],
+      link: "#",
+      githubFront: "#",
+      githubBack: "#"
+    }
+  ];
+
+  const grid = document.getElementById('projectsGrid');
+  projects.forEach((p, index) => {
+    const card = document.createElement('div');
+    card.className = 'folder-wrapper';
+
+    card.innerHTML = `
+      <div class="folder-tab"></div>
+      <div class="folder-body" onclick="openModal(${index})">
+        <div class="folder-header-row">
+            <span class="folder-id">/PROJECT_0${index + 1}</span>
+            <span class="folder-id">${p.year}</span>
+        </div>
+        <div class="folder-content-main">
+          <h3 class="folder-title">${p.title}</h3>
+          <p class="folder-preview-text">${p.shortDesc}</p>
+        </div>
+        <div class="folder-action"><span>Open Folder</span> ↗</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // --- MODAL & CAROUSEL LOGIC ---
+  const modal = document.getElementById('projectModal');
+  const closeModalBtn = document.getElementById('closeModal');
+  const mTitle = document.getElementById('m-title');
+  const mDesc = document.getElementById('m-desc');
+  const mTech = document.getElementById('m-tech');
+  const mLinkContainer = document.getElementById('m-link-container');
+  const mCarousel = document.getElementById('m-carousel');
+  const mDots = document.getElementById('m-dots');
+  const carouselOverlay = document.getElementById('m-carousel-overlay');
+  const carouselCaption = document.getElementById('m-carousel-caption');
+
+  const btnPrev = document.getElementById('c-prev');
+  const btnNext = document.getElementById('c-next');
+  const scrollHint = document.getElementById('m-scroll-hint');
+
+  let currentSlideIndex = -1;
+  let currentProjectImages = [];
+
+  window.openModal = function(index) {
+    const p = projects[index];
+    mTitle.textContent = p.title;
+    mDesc.innerHTML = p.fullDesc;
+    mTech.innerHTML = p.tech.map(t => `<span class="modal-badge">${t}</span>`).join('');
+
+    mLinkContainer.innerHTML = '';
+    if (p.link && p.link !== '#') { mLinkContainer.innerHTML += `<a href="${p.link}" target="_blank" class="modal-link-btn">Visit Live Site ↗</a>`; }
+    if (p.githubFront && p.githubFront !== '#') { mLinkContainer.innerHTML += `<a href="${p.githubFront}" target="_blank" class="modal-link-btn-outline">GitHub Repository - Frontend ↗</a>`; }
+    if (p.githubBack && p.githubBack !== '#') { mLinkContainer.innerHTML += `<a href="${p.githubBack}" target="_blank" class="modal-link-btn-outline">GitHub Repository - Backend ↗</a>`; }
+    if (p.github && p.github !== '#') { mLinkContainer.innerHTML += `<a href="${p.github}" target="_blank" class="modal-link-btn-outline">GitHub Repository ↗</a>`; }
+
+    mCarousel.innerHTML = ''; mDots.innerHTML = '';
+    scrollHint.classList.remove('active');
+
+    currentProjectImages = p.gallery && p.gallery.length > 0 ? p.gallery : [{src: 'img/placeholder_project.jpg', title: 'Preview'}];
+
+    currentProjectImages.forEach((imgObj, i) => {
+      const imgSrc = typeof imgObj === 'string' ? imgObj : imgObj.src;
+      const imgTitle = typeof imgObj === 'string' ? 'Project Detail' : imgObj.title;
+
+      const slide = document.createElement('div');
+      slide.className = 'carousel-slide';
+
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.className = 'carousel-img';
+      img.alt = imgTitle;
+
+      img.onload = () => {
+        if (i === currentSlideIndex) {
+          checkScrollability(slide);
+        }
+      };
+
+      slide.onscroll = () => {
+        if (slide.scrollTop > 10) scrollHint.classList.remove('active');
+      };
+
+      slide.appendChild(img);
+      mCarousel.appendChild(slide);
+
+      const dot = document.createElement('div');
+      dot.className = i === 0 ? 'carousel-dot active' : 'carousel-dot';
+      dot.onclick = () => { mCarousel.scrollTo({ left: mCarousel.offsetWidth * i, behavior: 'smooth' }); };
+      mDots.appendChild(dot);
+    });
+
+    mCarousel.scrollLeft = 0;
+    currentSlideIndex = 0;
+    triggerCaptionFlash(0);
+    updateArrows(0);
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+
+  function checkScrollability(slideElement) {
+    if (slideElement && slideElement.scrollHeight > slideElement.clientHeight + 10 && slideElement.scrollTop === 0) {
+      scrollHint.classList.add('active');
+    } else {
+      scrollHint.classList.remove('active');
+    }
+  }
+
+  function updateArrows(idx) {
+    if (idx <= 0) btnPrev.classList.add('disabled'); else btnPrev.classList.remove('disabled');
+    if (idx >= currentProjectImages.length - 1) btnNext.classList.add('disabled'); else btnNext.classList.remove('disabled');
+  }
+
+  btnPrev.onclick = () => {
+    if (currentSlideIndex > 0) mCarousel.scrollTo({ left: mCarousel.offsetWidth * (currentSlideIndex - 1), behavior: 'smooth' });
+  };
+  btnNext.onclick = () => {
+    if (currentSlideIndex < currentProjectImages.length - 1) mCarousel.scrollTo({ left: mCarousel.offsetWidth * (currentSlideIndex + 1), behavior: 'smooth' });
+  };
+
+  function triggerCaptionFlash(idx) {
+    if (!currentProjectImages[idx]) return;
+    const title = typeof currentProjectImages[idx] === 'string' ? 'Project Detail' : currentProjectImages[idx].title;
+    carouselCaption.textContent = title;
+
+    carouselOverlay.classList.remove('flash');
+    void carouselOverlay.offsetWidth;
+    carouselOverlay.classList.add('flash');
+  }
+
+  mCarousel.onscroll = () => {
+    const idx = Math.round(mCarousel.scrollLeft / mCarousel.offsetWidth);
+    if (idx !== currentSlideIndex) {
+      currentSlideIndex = idx;
+      document.querySelectorAll('.carousel-dot').forEach((d, i) => { d.classList.toggle('active', i === idx); });
+      triggerCaptionFlash(idx);
+      updateArrows(idx);
+      checkScrollability(mCarousel.children[idx]);
+    }
+  };
+
+  closeModalBtn.onclick = () => { modal.classList.remove('active'); document.body.style.overflow = 'auto'; carouselOverlay.classList.remove('flash'); };
+  modal.onclick = (e) => { if(e.target === modal) { modal.classList.remove('active'); document.body.style.overflow = 'auto'; carouselOverlay.classList.remove('flash'); }};
+
+  // --- MOBILE MENU LOGIC ---
+  const hamburger = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+  let isMenuOpen = false;
+  let menuAnimVersion = 0;
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('active');
+    isMenuOpen = !isMenuOpen;
+
+    if (isMenuOpen) {
+      menuAnimVersion++;
+      animateMenuLinks(menuAnimVersion);
+    } else {
+      resetMenuLinks();
+    }
+  });
+
+  function resetMenuLinks() {
+    menuAnimVersion++;
+    mobileLinks.forEach(link => {
+      if (!link.classList.contains('active-page')) {
+        link.querySelector('.text-content').textContent = '';
+        link.querySelector('.menu-cursor').classList.remove('typing');
+      }
+    });
+  }
+
+  async function animateMenuLinks(versionId) {
+    mobileLinks.forEach(link => {
+      if (!link.classList.contains('active-page')) {
+        link.querySelector('.text-content').textContent = '';
+      }
+    });
+
+    for (let link of mobileLinks) {
+      if (versionId !== menuAnimVersion) return;
+      if (link.classList.contains('active-page')) continue;
+
+      const text = link.getAttribute('data-text');
+      const textSpan = link.querySelector('.text-content');
+      const cursorSpan = link.querySelector('.menu-cursor');
+
+      cursorSpan.classList.add('typing');
+
+      for (let i = 0; i < text.length; i++) {
+        if (versionId !== menuAnimVersion) return;
+        textSpan.textContent += text.charAt(i);
+        await new Promise(r => setTimeout(r, 50));
+      }
+
+      if (versionId !== menuAnimVersion) return;
+      cursorSpan.classList.remove('typing');
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+
+  // --- EFFETTO DECIFRAZIONE HACKER ---
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  function hackEffect(element) {
+    let iterations = 0;
+    const originalText = element.dataset.value;
+    const interval = setInterval(() => {
+      element.innerText = originalText.split("").map((letter, index) => {
+        if (index < iterations) return originalText[index];
+        return letters[Math.floor(Math.random() * 26)];
+      }).join("");
+      if (iterations >= originalText.length) clearInterval(interval);
+      iterations += 1 / 2;
+    }, 40);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const title = document.getElementById('title-header');
+    const subtitle = document.getElementById('subtitle-header');
+    hackEffect(title);
+    setTimeout(() => { hackEffect(subtitle); }, 500);
+  });
+
+  // --- LOGICA MODALE CONTATTI (CTA BOTTOM) ---
+  const openContactModalBtn = document.getElementById('openContactModal');
+  const closeContactModalBtn = document.getElementById('closeContactModal');
+  const contactModal = document.getElementById('contactModal');
+  const contactForm = document.getElementById('contactForm');
+  const submitContactBtn = document.getElementById('submitContactBtn');
+  const contactModalHeader = document.getElementById('contactModalHeader');
+  const contactSuccessMessage = document.getElementById('contactSuccessMessage');
+  const contactSuccessText = document.getElementById('contactSuccessText');
+
+  openContactModalBtn.addEventListener('click', () => {
+    contactModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    contactForm.style.display = 'flex';
+    contactModalHeader.style.display = 'block';
+    contactSuccessMessage.style.display = 'none';
+    submitContactBtn.textContent = 'Send Message';
+    submitContactBtn.disabled = false;
+    contactForm.reset();
+  });
+
+  const chiudiContactModale = () => { contactModal.classList.remove('active'); document.body.style.overflow = 'auto'; };
+  closeContactModalBtn.addEventListener('click', chiudiContactModale);
+  contactModal.addEventListener('click', (e) => { if (e.target === contactModal) chiudiContactModale(); });
+
+  contactForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    submitContactBtn.textContent = 'Sending...';
+    submitContactBtn.disabled = true;
+
+    const formData = new FormData(contactForm);
+    const nome = formData.get('name');
+    const azienda = formData.get('company');
+
+    let messaggioGenerato = `Dear Andrea,\n\nI am ${nome}`;
+    if (azienda && azienda.trim() !== "") { messaggioGenerato += ` from ${azienda}`; }
+    messaggioGenerato += `.\nI visited your projects page and would like to discuss a potential collaboration.\n\nContact Details:\nName: ${nome}\nEmail: ${formData.get('email')}\nPhone: ${formData.get('phone') || 'Not provided'}`;
+
+    formData.append('message', messaggioGenerato);
+
+    try {
+      const response = await fetch(contactForm.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
+      if (response.ok) {
+        contactForm.style.display = 'none'; contactModalHeader.style.display = 'none';
+        contactSuccessText.textContent = `Excellent ${nome}, I have received your request. Talk to you soon!`;
+        contactSuccessMessage.style.display = 'block';
+      } else { throw new Error('Network error'); }
+    } catch (error) {
+      alert("An error occurred while sending. Please try again or email me at andreadelfatto@gmail.com");
+      submitContactBtn.textContent = 'Send Message'; submitContactBtn.disabled = false;
+    }
+  });
+
+</script>
+</body>
+</html>

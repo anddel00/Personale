@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | Andrea Del Fatto</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #050505;
+      --text-primary: #e2e8f0;
+      --text-highlight: #66fcf1;
+      --text-secondary: #94a3b8;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --border-color: rgba(102, 252, 241, 0.15);
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    ::-webkit-scrollbar { display: none; }
+    html { scrollbar-width: none; -ms-overflow-style: none; overflow-y: scroll; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    header, .timeline-wrapper, .skills-section { line-height: 1.6; }
+
+    /* --- NAVIGAZIONE --- */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 2.5rem 5%; width: 100%; position: absolute; top: 0; left: 0; z-index: 200; background: transparent;
+    }
+    .logo { font-family: var(--font-mono); font-weight: 700; font-size: 1.5rem; color: var(--text-highlight); letter-spacing: -1px; z-index: 201; text-decoration: none; line-height: 1; }
+
+    .nav-links { list-style: none; display: flex; gap: 2rem; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
+    .nav-links a { position: relative; display: inline-block; text-decoration: none; color: var(--text-primary); font-size: 1rem; font-weight: 400; overflow: hidden; }
+    .nav-links a span { display: inline-block; transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
+    .nav-links a::after { content: attr(data-text); position: absolute; left: 0; top: 100%; width: 100%; color: var(--text-highlight); transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
+    .nav-links a:hover span { transform: translateY(-100%); }
+    .nav-links a:hover::after { transform: translateY(-100%); }
+    .nav-links a.active span { transform: translateY(-100%); }
+    .nav-links a.active::after { transform: translateY(-100%); color: var(--text-highlight); }
+
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; z-index: 201; }
+    .lang-switch { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: var(--text-primary); text-decoration: none; border: 1px solid var(--border-color); padding: 0.4rem 0.8rem; border-radius: 6px; background: rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+    .lang-switch:hover { color: var(--text-highlight); border-color: var(--text-highlight); background: transparent; box-shadow: 0 0 15px rgba(102, 252, 241, 0.3); }
+
+    .hamburger { display: none; cursor: pointer; z-index: 201; width: 30px; height: 20px; position: relative; }
+    .hamburger span { display: block; position: absolute; height: 2px; width: 100%; background: var(--text-highlight); border-radius: 9px; transition: .25s ease-in-out; }
+    .hamburger span:nth-child(1) { top: 0px; } .hamburger span:nth-child(2) { top: 9px; } .hamburger span:nth-child(3) { top: 18px; }
+    .hamburger.open span:nth-child(1) { top: 9px; transform: rotate(135deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; left: -60px; }
+    .hamburger.open span:nth-child(3) { top: 9px; transform: rotate(-135deg); }
+
+    .mobile-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(20px); z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+    .mobile-menu.active { opacity: 1; pointer-events: all; }
+    .mobile-link { font-family: var(--font-mono); font-size: 2rem; color: var(--text-primary); text-decoration: none; margin: 1.5rem 0; position: relative; }
+    .mobile-link:hover { color: var(--text-highlight); }
+    .menu-cursor { display: inline-block; width: 10px; height: 2rem; background-color: var(--text-highlight); vertical-align: middle; opacity: 0; }
+    .menu-cursor.typing { opacity: 1; animation: blink 1s infinite; }
+    .mobile-link.active-page .text-content { color: var(--text-highlight); }
+    .mobile-link.active-page .menu-cursor { opacity: 1; animation: blink 1s infinite; display: inline-block; }
+
+    /* --- HEADER / BIO --- */
+    header { padding: 8rem 5% 2rem 5%; max-width: 900px; margin: 0 auto; text-align: center; }
+    h1 { font-family: var(--font-mono); font-size: clamp(2rem, 5vw, 2.5rem); color: #fff; margin-bottom: 1rem; min-height: 3rem; line-height: 1.2; }
+    .subtitle { font-size: clamp(1rem, 2vw, 1.1rem); color: var(--text-secondary); margin-bottom: 2rem; font-family: var(--font-mono); min-height: 1.5rem; }
+    .bio-text { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 2rem; text-align: left; background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); opacity: 0; animation: fadeIn 1s ease-out 1s forwards; }
+    .bio-text strong { color: var(--text-highlight); font-weight: 600; }
+
+    .download-btn { display: inline-block; padding: 0.8rem 1.5rem; border: 1px solid var(--text-highlight); color: #050505; background: var(--text-highlight); text-decoration: none; font-family: var(--font-mono); border-radius: 8px; font-weight: 600; transition: all 0.3s ease; margin-top: 1rem; cursor: pointer; opacity: 0; animation: fadeIn 1s ease-out 1.2s forwards; }
+    .download-btn:hover { background: transparent; color: var(--text-highlight); box-shadow: 0 0 20px rgba(102, 252, 241, 0.4); }
+
+    /* --- TIMELINE SECTION --- */
+    .timeline-wrapper { padding: 2rem 5% 2rem 5%; max-width: 900px; margin: 0 auto; }
+    .timeline-section { margin-bottom: 5rem; }
+    .section-title { font-family: var(--font-mono); font-size: 1.5rem; color: #fff; margin-bottom: 2.5rem; border-left: 4px solid var(--text-highlight); padding-left: 1rem; display: inline-block; }
+    .timeline { position: relative; padding-left: 2rem; border-left: 2px solid rgba(255, 255, 255, 0.1); }
+    .timeline-item { margin-bottom: 3rem; position: relative; opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+    .timeline-item.visible { opacity: 1; transform: translateY(0); }
+    .timeline-dot { position: absolute; left: -2.6rem; top: 0.5rem; width: 1.2rem; height: 1.2rem; background: var(--bg-color); border: 2px solid var(--text-highlight); border-radius: 50%; box-shadow: 0 0 10px rgba(102, 252, 241, 0.3); }
+    .timeline-date { font-family: var(--font-mono); color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem; display: block; }
+    .timeline-content { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color); transition: transform 0.3s ease; }
+    .timeline-content:hover { transform: translateX(10px); border-color: var(--text-highlight); }
+    .timeline-content h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.3rem; }
+    .timeline-content h4 { color: var(--text-primary); font-size: 1rem; font-weight: 400; margin-bottom: 1rem; font-style: italic; }
+    .timeline-content ul { list-style-position: inside; padding-left: 0.5rem; }
+    .timeline-content li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+    .timeline-content strong { color: var(--text-highlight); }
+
+    /* --- SKILLS SECTION --- */
+    .skills-section { padding: 0 5% 5rem 5%; max-width: 1000px; margin: 0 auto; perspective: 1000px; }
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+
+    .skill-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      opacity: 0;
+      transform: translateY(-50px) rotateX(45deg) scale(0.9);
+      transition: opacity 0.8s ease-out, transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease;
+      transform-origin: top center;
+    }
+
+    .skills-section.visible .skill-card { opacity: 1; transform: translateY(0) rotateX(0) scale(1); }
+
+    .skills-section.visible .skill-card:nth-child(1) { transition-delay: 0.1s; }
+    .skills-section.visible .skill-card:nth-child(2) { transition-delay: 0.4s; }
+    .skills-section.visible .skill-card:nth-child(3) { transition-delay: 0.7s; }
+    .skills-section.visible .skill-card:nth-child(4) { transition-delay: 1.0s; }
+
+    .skills-section.visible .skill-card:hover { transform: translateY(-5px) scale(1.02); border-color: var(--text-highlight); transition-delay: 0s; }
+    .skill-card h3 { color: #fff; font-family: var(--font-mono); font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .tag { font-size: 0.85rem; font-family: var(--font-mono); background: rgba(102, 252, 241, 0.05); color: var(--text-primary); padding: 0.3rem 0.8rem; border-radius: 4px; border: 1px solid rgba(102, 252, 241, 0.15); transition: all 0.2s ease; }
+    .tag:hover { background: rgba(102, 252, 241, 0.15); color: var(--text-highlight); border-color: var(--text-highlight); }
+
+    /* --- FOOTER --- */
+    footer { background-color: rgba(5, 5, 5, 0.95); border-top: 1px solid var(--border-color); padding: 2rem 5%; margin-top: auto; z-index: 10; position: relative; }
+    .footer-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-item { display: flex; align-items: center; gap: 0.8rem; color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.9rem; }
+    .footer-item a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease; display: flex; align-items: center; gap: 0.5rem; }
+    .footer-item a:hover { color: var(--text-highlight); }
+    .location-icon, .email-icon { width: 20px; height: 20px; color: var(--text-secondary); transition: color 0.3s ease; }
+    .linkedin-icon { width: 22px; height: 22px; fill: var(--text-secondary); transition: fill 0.3s ease; }
+    .footer-item:hover .location-icon, .footer-item a:hover .email-icon { color: var(--text-highlight); }
+    .footer-item a:hover .linkedin-icon { fill: var(--text-highlight); }
+    .privacy-links { display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end; }
+    .copyright { text-align: center; width: 100%; margin-top: 2rem; font-size: 0.8rem; color: #475569; font-family: var(--font-mono); }
+
+    /* --- MODALE CONTACT FORM --- */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+    .modal-content { background: #0b0d10; border: 1px solid var(--border-color); padding: 2.5rem; border-radius: 12px; width: 90%; max-width: 450px; position: relative; transform: translateY(-20px); transition: transform 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+    .modal-overlay.active .modal-content { transform: translateY(0); }
+
+    .close-modal { position: absolute; top: 1rem; right: 1.5rem; font-size: 1.8rem; color: var(--text-secondary); cursor: pointer; transition: color 0.2s; line-height: 1; }
+    .close-modal:hover { color: var(--text-highlight); }
+
+    .modal-content h2 { font-family: var(--font-mono); color: #fff; margin-bottom: 0.5rem; }
+    .modal-content p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.5; }
+
+    .contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; text-align: left; }
+    .form-group label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary); }
+
+    /* FIX ZOOM iOS: font-size impostato a 16px */
+    .contact-form input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(102, 252, 241, 0.2);
+      padding: 1rem;
+      border-radius: 6px;
+      color: #fff;
+      font-family: var(--font-main);
+      font-size: 16px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .contact-form input:focus { outline: none; border-color: var(--text-highlight); box-shadow: 0 0 10px rgba(102, 252, 241, 0.2); }
+
+    .submit-btn { background: var(--text-highlight); color: #050505; border: none; padding: 0.9rem; border-radius: 6px; font-weight: 700; font-family: var(--font-mono); cursor: pointer; transition: all 0.3s; margin-top: 1rem; }
+    .submit-btn:hover { background: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+    .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    .success-message { display: none; text-align: center; padding: 2rem 0; animation: fadeIn 0.5s ease forwards; }
+    .success-icon { width: 60px; height: 60px; color: var(--text-highlight); margin-bottom: 1.5rem; }
+    .success-message h3 { color: #fff; font-family: var(--font-mono); margin-bottom: 0.5rem; }
+    .success-message p { color: var(--text-secondary); font-size: 0.95rem; }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- RESPONSIVE MOBILE STRATEGICO --- */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      nav { padding: 1.5rem; height: auto; }
+      header { padding-top: 6rem; }
+
+      .download-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        margin-top: 1.5rem;
+      }
+
+      .timeline { padding-left: 1.5rem; }
+      .timeline-dot { left: -2.15rem; width: 1rem; height: 1rem; }
+      .footer-container { flex-direction: column; align-items: flex-start; text-align: left; gap: 1.5rem; }
+      .privacy-links { align-items: flex-start; }
+      .skills-section.visible .skill-card:nth-child(n) { transition-delay: 0.1s; }
+
+      .modal-content {
+        padding: 2rem 1.2rem;
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .close-modal {
+        top: 0.5rem;
+        right: 1rem;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeModal">&times;</span>
+
+    <div id="modalHeader">
+      <h2>Request My Resume</h2>
+      <p>Leave your contact details, and I will promptly email you my updated resume.</p>
+    </div>
+
+    <form class="contact-form" id="cvForm" action="https://formspree.io/f/xqedyegv" method="POST">
+      <div class="form-group">
+        <label for="name">Name / Recruiter *</label>
+        <input type="text" id="name" name="name" required placeholder="e.g. John Doe">
+      </div>
+      <div class="form-group">
+        <label for="company">Company (Optional)</label>
+        <input type="text" id="company" name="company" placeholder="e.g. Tech Corp LLC">
+      </div>
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" required placeholder="john.doe@company.com">
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone (Optional)</label>
+        <input type="tel" id="phone" name="phone" placeholder="+1 234 567890">
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Request Resume</button>
+    </form>
+
+    <div class="success-message" id="successMessage">
+      <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <h3>Request Sent!</h3>
+      <p id="successText">Thank you, I will send you my resume as soon as possible.</p>
+    </div>
+  </div>
+</div>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index_en.html" class="mobile-link" data-text="Home"><span class="text-content"></span><span class="menu-cursor"></span></a>
+  <a href="profile_en.html" class="mobile-link active-page" data-text="Profile"><span class="text-content">Profile</span><span class="menu-cursor"></span></a>
+  <a href="projects_en.html" class="mobile-link" data-text="Projects"><span class="text-content"></span><span class="menu-cursor"></span></a>
+</div>
+
+<nav>
+  <a href="index_en.html" class="logo">ADF.</a>
+  <ul class="nav-links">
+    <li><a href="profile_en.html" class="active" data-text="Profile"><span>Profile</span></a></li>
+    <li><a href="projects_en.html" data-text="Projects"><span>Projects</span></a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="profilo.html" class="lang-switch" title="Switch to Italian">IT</a>
+    <div class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<header>
+  <h1 id="name-header" data-value="Andrea Del Fatto">Andrea Del Fatto</h1>
+  <div class="subtitle" id="role-header" data-value="Future AI & System Engineer">Future AI & System Engineer</div>
+  <div class="bio-text">
+    <p>
+      I am a Computer Engineer specializing in <strong>Complex Systems, AI, and Cloud Computing</strong>.
+      I combine solid academic skills in <strong>Cybersecurity</strong> and Control Systems with a practical background in Full Stack development.
+      <br><br>
+      Driven by algorithmic problem-solving and optimization, I aim for roles in <strong>R&D</strong> or <strong>System Engineering</strong>
+      where I can design secure and intelligent technological infrastructures.
+    </p>
+  </div>
+  <button class="download-btn" id="openModalBtn">Request Full Resume</button>
+</header>
+
+<div class="timeline-wrapper">
+  <section class="timeline-section">
+    <h2 class="section-title">Professional Experience</h2>
+    <div class="timeline">
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot"></div>
+        <span class="timeline-date">June 2024 - Present</span>
+        <div class="timeline-content">
+          <h3>Software Engineer & IT Consultant (Freelance)</h3>
+          <h4>Freelance</h4>
+          <ul>
+            <li>End-to-end design of complex solutions for the Hospitality sector.</li>
+            <li>Full SDLC management, from requirements analysis to deployment.</li>
+            <li>Full Stack development (PHP, JS, SQL) optimized for SEO and performance.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot"></div>
+        <span class="timeline-date">Jan 2025 - Mar 2025</span>
+        <div class="timeline-content">
+          <h3>Junior Frontend Engineer (Internship)</h3>
+          <h4>CINECA, Bologna</h4>
+          <ul>
+            <li>UI/UX refactoring and modernization of the "Cerca Università" portal (Italian Ministry of University and Research).</li>
+            <li>Rigorous implementation of WCAG accessibility standards.</li>
+            <li>Core Web Vitals optimization via Google Lighthouse audits.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline-section">
+    <h2 class="section-title">Education</h2>
+    <div class="timeline">
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot"></div>
+        <span class="timeline-date">2025 - 2027 (Expected)</span>
+        <div class="timeline-content">
+          <h3>MSc in Computer and Automation Engineering</h3>
+          <h4>University of Ferrara</h4>
+          <p>Specializing in Advanced Computing, Machine Learning, Cybersecurity, and Cloud Computing.</p>
+        </div>
+      </div>
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot"></div>
+        <span class="timeline-date">2025</span>
+        <div class="timeline-content">
+          <h3>BSc in Electronic and Computer Engineering</h3>
+          <h4>University of Ferrara</h4>
+          <p>Thesis: "Optimization of a Web Interface: analysis and implementation of solutions to improve accessibility and performance".</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="skills-section fade-in" id="skillsSection">
+  <h2 class="section-title">Skills & Expertise</h2>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <h3>Engineering & Backend</h3>
+      <div class="skill-tags">
+        <span class="tag">Java</span><span class="tag">Python</span><span class="tag">C/C++</span><span class="tag">PHP</span><span class="tag">SQL (MySQL/PostgreSQL)</span><span class="tag">OOP</span><span class="tag">Unix / Shell</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <h3>Frontend & Web</h3>
+      <div class="skill-tags">
+        <span class="tag">HTML5 / CSS3</span><span class="tag">JavaScript</span><span class="tag">WCAG / Accessibility</span><span class="tag">SEO Technical</span><span class="tag">Google Lighthouse</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <h3>Advanced & Tools</h3>
+      <div class="skill-tags">
+        <span class="tag">Machine Learning</span><span class="tag">Cloud Computing</span><span class="tag">Cybersecurity</span><span class="tag">Git / GitHub</span><span class="tag">Docker</span><span class="tag">Figma</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <h3>Soft Skills</h3>
+      <div class="skill-tags">
+        <span class="tag">Problem Solving</span><span class="tag">Team Work</span><span class="tag">Autonomy</span><span class="tag">Technical Communication</span><span class="tag">Stakeholder Management</span><span class="tag">Proactivity</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-item"><svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>Ferrara, Italy</span></div>
+    <div class="footer-item"><a href="mailto:andreadelfatto@gmail.com"><svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>andreadelfatto@gmail.com</a></div>
+    <div class="footer-item"><a href="https://linkedin.com/in/TUO-PROFILO-LINKEDIN" target="_blank" rel="noopener noreferrer"><svg class="linkedin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a></div>
+    <div class="footer-item iubenda-links"><a href="#" class="iubenda-nostyle no-brand iubenda-noiframe iubenda-embed iubenda-noiframe" title="Privacy Policy">Privacy Policy</a><a href="#" class="iubenda-nostyle no-brand iubenda-noiframe iubenda-embed iubenda-noiframe" title="Cookie Policy">Cookie Policy</a></div>
+  </div>
+  <div class="copyright">© 2026 Andrea Del Fatto. All rights reserved.</div>
+</footer>
+
+<script>
+  // --- SCROLL ANIMATION ---
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // --- LOGICA MODALE E FORMSPREE AJAX ---
+  const openModalBtn = document.getElementById('openModalBtn');
+  const closeModalBtn = document.getElementById('closeModal');
+  const contactModal = document.getElementById('contactModal');
+  const cvForm = document.getElementById('cvForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const modalHeader = document.getElementById('modalHeader');
+  const successMessage = document.getElementById('successMessage');
+  const successText = document.getElementById('successText');
+
+  openModalBtn.addEventListener('click', () => {
+    contactModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    cvForm.style.display = 'flex';
+    modalHeader.style.display = 'block';
+    successMessage.style.display = 'none';
+    submitBtn.textContent = 'Request Resume';
+    submitBtn.disabled = false;
+    cvForm.reset();
+  });
+
+  const chiudiModale = () => {
+    contactModal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  };
+  closeModalBtn.addEventListener('click', chiudiModale);
+  contactModal.addEventListener('click', (e) => { if (e.target === contactModal) chiudiModale(); });
+
+  cvForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    submitBtn.textContent = 'Sending...';
+    submitBtn.disabled = true;
+
+    const formData = new FormData(cvForm);
+    const nome = formData.get('name');
+    const azienda = formData.get('company');
+
+    let messaggioGenerato = `Dear Andrea,\n\nI am ${nome}`;
+    if (azienda && azienda.trim() !== "") {
+      messaggioGenerato += ` from ${azienda}`;
+    }
+    messaggioGenerato += `.\nI would like to receive your full resume.\n\nContact details provided:\nName: ${nome}\nEmail: ${formData.get('email')}\nPhone: ${formData.get('phone') || 'Not specified'}`;
+
+    formData.append('message', messaggioGenerato);
+
+    try {
+      const response = await fetch(cvForm.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        cvForm.style.display = 'none';
+        modalHeader.style.display = 'none';
+        successText.textContent = `Thank you ${nome}, I have received your request. I will send you my resume as soon as possible!`;
+        successMessage.style.display = 'block';
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      alert("An error occurred while sending. Please try again or contact me directly at andreadelfatto@gmail.com");
+      submitBtn.textContent = 'Request Resume';
+      submitBtn.disabled = false;
+    }
+  });
+
+  // --- MOBILE MENU ---
+  const hamburger = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+  let isMenuOpen = false;
+  let menuAnimVersion = 0;
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('active');
+    isMenuOpen = !isMenuOpen;
+    if (isMenuOpen) { menuAnimVersion++; animateMenuLinks(menuAnimVersion); } else { resetMenuLinks(); }
+  });
+
+  function resetMenuLinks() {
+    menuAnimVersion++;
+    mobileLinks.forEach(link => {
+      if (!link.classList.contains('active-page')) {
+        link.querySelector('.text-content').textContent = '';
+        link.querySelector('.menu-cursor').classList.remove('typing');
+      }
+    });
+  }
+
+  async function animateMenuLinks(versionId) {
+    mobileLinks.forEach(link => {
+      if (!link.classList.contains('active-page')) { link.querySelector('.text-content').textContent = ''; }
+    });
+    for (let link of mobileLinks) {
+      if (versionId !== menuAnimVersion) return;
+      if (link.classList.contains('active-page')) continue;
+      const text = link.getAttribute('data-text');
+      const textSpan = link.querySelector('.text-content');
+      const cursorSpan = link.querySelector('.menu-cursor');
+      cursorSpan.classList.add('typing');
+      for (let i = 0; i < text.length; i++) {
+        if (versionId !== menuAnimVersion) return;
+        textSpan.textContent += text.charAt(i);
+        await new Promise(r => setTimeout(r, 50));
+      }
+      if (versionId !== menuAnimVersion) return;
+      cursorSpan.classList.remove('typing');
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+
+  // --- EFFETTO DECIFRAZIONE HACKER ---
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  function hackEffect(element) {
+    let iterations = 0;
+    const originalText = element.dataset.value;
+    const interval = setInterval(() => {
+      element.innerText = originalText.split("").map((letter, index) => {
+        if (index < iterations) { return originalText[index]; }
+        return letters[Math.floor(Math.random() * 26)];
+      }).join("");
+      if (iterations >= originalText.length) { clearInterval(interval); }
+      iterations += 1 / 2;
+    }, 40);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const nameHeader = document.getElementById('name-header');
+    const roleHeader = document.getElementById('role-header');
+    hackEffect(nameHeader);
+    setTimeout(() => { hackEffect(roleHeader); }, 500);
+  });
+</script>
+</body>
+</html>
