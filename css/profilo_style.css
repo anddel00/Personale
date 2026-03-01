@@ -1,0 +1,330 @@
+:root {
+  --bg-color: #050505;
+  --text-primary: #e2e8f0;
+  --text-highlight: #66fcf1;
+  --text-secondary: #94a3b8;
+  --card-bg: rgba(15, 20, 25, 0.45); /* Base scura per contrastare l'ombra interna */
+  --border-color: rgba(102, 252, 241, 0.15);
+  --font-main: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+::-webkit-scrollbar { display: none; }
+html { scrollbar-width: none; -ms-overflow-style: none; overflow-y: scroll; }
+
+body { background-color: var(--bg-color); color: var(--text-primary); font-family: var(--font-main); overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; position: relative; }
+
+header, .timeline-wrapper, .skills-section { line-height: 1.6; }
+
+/* --- NAVIGAZIONE --- */
+nav { display: flex; justify-content: space-between; align-items: center; padding: 2.5rem 5%; width: 100%; position: absolute; top: 0; left: 0; z-index: 200; background: transparent; }
+.logo { font-family: var(--font-mono); font-weight: 700; font-size: 1.5rem; color: var(--text-highlight); letter-spacing: -1px; z-index: 201; text-decoration: none; line-height: 1; }
+.nav-links { list-style: none; display: flex; gap: 2rem; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
+.nav-links a { position: relative; display: inline-block; text-decoration: none; color: var(--text-primary); font-size: 1rem; font-weight: 400; overflow: hidden; }
+.nav-links a span { display: inline-block; transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
+.nav-links a::after { content: attr(data-text); position: absolute; left: 0; top: 100%; width: 100%; color: var(--text-highlight); transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
+.nav-links a:hover span { transform: translateY(-100%); }
+.nav-links a:hover::after { transform: translateY(-100%); }
+.nav-links a.active span { transform: translateY(-100%); }
+.nav-links a.active::after { transform: translateY(-100%); color: var(--text-highlight); }
+
+.nav-right { display: flex; align-items: center; gap: 1.5rem; z-index: 201; }
+.lang-switch { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; color: var(--text-primary); text-decoration: none; border: 1px solid var(--border-color); padding: 0.4rem 0.8rem; border-radius: 6px; background: rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+.lang-switch:hover { color: var(--text-highlight); border-color: var(--text-highlight); background: transparent; box-shadow: 0 0 15px rgba(102, 252, 241, 0.3); }
+
+/* Hamburger & Mobile Menu */
+.hamburger { display: none; cursor: pointer; z-index: 201; width: 30px; height: 20px; position: relative; }
+.hamburger span { display: block; position: absolute; height: 2px; width: 100%; background: var(--text-highlight); border-radius: 9px; transition: .25s ease-in-out; }
+.hamburger span:nth-child(1) { top: 0px; } .hamburger span:nth-child(2) { top: 9px; } .hamburger span:nth-child(3) { top: 18px; }
+.hamburger.open span:nth-child(1) { top: 9px; transform: rotate(135deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; left: -60px; }
+.hamburger.open span:nth-child(3) { top: 9px; transform: rotate(-135deg); }
+.mobile-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(20px); z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+.mobile-menu.active { opacity: 1; pointer-events: all; }
+.mobile-link { font-family: var(--font-mono); font-size: 2rem; color: var(--text-primary); text-decoration: none; margin: 1.5rem 0; position: relative; }
+.mobile-link:hover { color: var(--text-highlight); }
+.menu-cursor { display: inline-block; width: 10px; height: 2rem; background-color: var(--text-highlight); vertical-align: middle; opacity: 0; }
+.menu-cursor.typing { opacity: 1; animation: blink 1s infinite; }
+.mobile-link.active-page .text-content { color: var(--text-highlight); }
+.mobile-link.active-page .menu-cursor { opacity: 1; animation: blink 1s infinite; display: inline-block; }
+
+/* =========================================
+   --- HEADER / BIO (Vero Neon Continuo) ---
+   ========================================= */
+header { padding: 10rem 5% 4rem 5%; max-width: 900px; margin: 0 auto; text-align: center; }
+h1 {
+  font-family: var(--font-main); /* Font standard della Home (Inter) */
+  font-size: clamp(2.5rem, 6vw, 3.5rem); /* Leggermente più grande e d'impatto */
+  font-weight: 800; /* Reso massiccio come nella index */
+  color: #fff;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+  letter-spacing: -2px; /* Stringe le lettere per un look moderno */
+
+  /* Animazione di spegnimento neon */
+  animation: neonTurnOff 2.5s ease-out forwards;
+}
+
+/* Effetto di accensione e spegnimento graduale */
+@keyframes neonTurnOff {
+  0% {
+    text-shadow: 0 0 10px var(--text-highlight), 0 0 20px var(--text-highlight), 0 0 40px var(--text-highlight);
+    color: #fff;
+  }
+  15% { text-shadow: 0 0 15px var(--text-highlight); }
+  25% { text-shadow: 0 0 25px var(--text-highlight), 0 0 50px var(--text-highlight); } /* Piccolo sfarfallio */
+  100% {
+    text-shadow: none;
+    color: #fff; /* Diventa bianco puro e nitido */
+  }
+}.subtitle { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-secondary); margin-bottom: 3rem; font-family: var(--font-mono); min-height: 1.5rem; letter-spacing: 1px;}
+
+.bio-text {
+  position: relative;
+  font-size: 1.15rem; color: var(--text-primary); margin-bottom: 3rem; text-align: justify;
+  background: var(--card-bg); /* Mantiene la trasparenza di base */
+  padding: 2.5rem;
+  border-radius: 16px;
+
+  /* Bordo statico di base semi-trasparente */
+  border: 1px solid rgba(102, 252, 241, 0.1);
+
+  /* Effetto Vetro (Glassmorphism) */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  /* Ombre per profondità del vetro */
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(102, 252, 241, 0.05);
+
+  opacity: 0; transform: translateY(20px); animation: slideUpFade 1s ease-out 0.8s forwards;
+  line-height: 1.8;
+}
+
+/* Assicura che il testo stia sopra le animazioni */
+.bio-text p { position: relative; z-index: 2; margin: 0; }
+.bio-text strong { color: var(--text-highlight); font-weight: 600; text-shadow: 0 0 10px rgba(102, 252, 241, 0.3); }
+
+/* --- LA MAGIA DEL BORDO AL NEON (SVG FLUIDO) --- */
+.bio-border-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Fa passare i click al testo sotto */
+  z-index: 1;
+  border-radius: 16px;
+}
+
+.bio-border-rect {
+  /* Inset di 1px per non far "tagliare" il bordo della linea fuori dal div */
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  transform: translate(1px, 1px);
+
+  fill: none;
+  stroke: #66FCF183;
+  stroke-width: 1px;
+  stroke-linecap: round; /* Arrotonda la "testa" e la "coda" della linea magica */
+
+  /* Effetto bagliore interno/esterno del neon applicato direttamente alla linea */
+  filter: drop-shadow(0 0 2px var(--text-highlight)) drop-shadow(0 0 2px var(--text-highlight));
+
+  /* Gestione del tratto: 20% della lunghezza è linea, 80% è spazio vuoto */
+  stroke-dasharray: 20 80;
+  stroke-dashoffset: 0;
+
+  /* Animazione lineare senza interruzioni */
+  animation: tracePerfect 5s linear infinite;
+}
+
+/* Fa scorrere il tratto lungo il perimetro per l'esatta lunghezza di pathLength="100" */
+@keyframes tracePerfect {
+  100% { stroke-dashoffset: -100; }
+}
+
+/* Bottone Shine (Rimani invariato) */
+.download-btn { position: relative; overflow: hidden; display: inline-block; padding: 1rem 2rem; border: 1px solid var(--text-highlight); color: #050505; background: var(--text-highlight); text-decoration: none; font-family: var(--font-mono); border-radius: 8px; font-weight: 700; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; opacity: 0; transform: scale(0.9); animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.2s forwards; font-size: 1rem; z-index: 2;}
+.download-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); animation: shine 5s infinite; }
+.download-btn:hover { background: transparent; color: var(--text-highlight); box-shadow: 0 0 25px rgba(102, 252, 241, 0.4); transform: translateY(-3px); }
+
+/* --- KEYFRAMES BASE --- */
+@keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+@keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+/* --- TIMELINE SECTION --- */
+.timeline-wrapper { padding: 2rem 5% 5rem 5%; max-width: 900px; margin: 0 auto; }
+.timeline-section { margin-bottom: 5rem; }
+.section-title { font-family: var(--font-mono); font-size: 1.8rem; color: #fff; margin-bottom: 3.5rem; border-left: 4px solid var(--text-highlight); padding-left: 1.2rem; display: inline-block; letter-spacing: -1px; }
+
+.timeline { position: relative; padding-left: 2.5rem; }
+.timeline::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0; background: linear-gradient(to bottom, var(--text-highlight), rgba(102,252,241,0.1)); transition: height 1.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.timeline.draw-line::before { height: 100%; }
+
+.timeline-item { margin-bottom: 4rem; position: relative; opacity: 0; transform: translateX(-30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.timeline-item.visible { opacity: 1; transform: translateX(0); }
+
+.timeline-dot { position: absolute; left: -2.95rem; top: 0.2rem; width: 1rem; height: 1rem; background: var(--bg-color); border: 2px solid var(--text-highlight); border-radius: 50%; box-shadow: 0 0 10px var(--text-highlight); z-index: 2; animation: pulseDot 3s infinite alternate; }
+.timeline-date { font-family: var(--font-mono); color: var(--text-highlight); font-size: 0.9rem; margin-bottom: 0.8rem; display: inline-block; padding: 0.3rem 0.8rem; background: rgba(102, 252, 241, 0.1); border-radius: 20px; }
+
+.timeline-content { background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.timeline-content:hover { transform: translateY(-8px) scale(1.01); border-color: var(--text-highlight); box-shadow: 0 15px 30px rgba(0,0,0,0.6), 0 0 20px rgba(102, 252, 241, 0.1); }
+.timeline-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+
+/* Rotazione Veloce Icona Hover */
+.timeline-icon { width: 28px; height: 28px; fill: none; stroke: var(--text-primary); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.3s, transform 0.5s ease-in-out; }
+.timeline-content:hover .timeline-icon { stroke: var(--text-highlight); transform: rotate(360deg); }
+
+.timeline-content h3 { color: #fff; font-size: 1.3rem; }
+.timeline-content h4 { color: var(--text-secondary); font-size: 1rem; font-weight: 400; margin-bottom: 1.5rem; font-family: var(--font-mono); }
+.timeline-content ul { list-style-position: outside; padding-left: 1.2rem; color: var(--text-primary); }
+.timeline-content li { margin-bottom: 0.8rem; font-size: 0.95rem; line-height: 1.6; }
+.timeline-content li::marker { color: var(--text-highlight); }
+.timeline-content strong { color: #fff; }
+
+/* --- SKILLS SECTION --- */
+.skills-section { padding: 0 5% 5rem 5%; max-width: 1000px; margin: 0 auto; }
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
+
+.skill-card { background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(0,0,0,0.4)); border: 1px solid var(--border-color); border-radius: 16px; padding: 2rem; opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); }
+.skills-section.visible .skill-card { opacity: 1; transform: translateY(0); }
+.skills-section.visible .skill-card:nth-child(1) { transition-delay: 0.1s; }
+.skills-section.visible .skill-card:nth-child(2) { transition-delay: 0.2s; }
+.skills-section.visible .skill-card:nth-child(3) { transition-delay: 0.3s; }
+.skills-section.visible .skill-card:nth-child(4) { transition-delay: 0.4s; }
+
+.skill-card:hover { transform: translateY(-10px) !important; border-color: var(--text-highlight); box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(102, 252, 241, 0.05); }
+.skill-card h3 { color: #fff; font-family: var(--font-mono); font-size: 1.2rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;}
+.skill-tags { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.tag { font-size: 0.85rem; font-family: var(--font-mono); background: rgba(102, 252, 241, 0.03); color: var(--text-primary); padding: 0.4rem 1rem; border-radius: 6px; border: 1px solid rgba(102, 252, 241, 0.2); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.tag:hover { background: rgba(102, 252, 241, 0.15); color: #fff; border-color: var(--text-highlight); transform: scale(1.05); box-shadow: 0 0 10px rgba(102, 252, 241, 0.2); }
+
+/* --- MODALE CONTACT FORM --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal-content { background: #0b0d10; border: 1px solid var(--border-color); padding: 3rem; border-radius: 16px; width: 90%; max-width: 500px; position: relative; transform: translateY(50px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+.modal-overlay.active .modal-content { transform: translateY(0); }
+.close-modal { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 2rem; color: var(--text-secondary); cursor: pointer; transition: color 0.2s; line-height: 1; }
+.close-modal:hover { color: var(--text-highlight); }
+.modal-content h2 { font-family: var(--font-mono); color: #fff; margin-bottom: 0.5rem; font-size: 1.8rem;}
+.modal-content p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6; }
+
+.contact-form { display: flex; flex-direction: column; gap: 1.5rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
+.form-group label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;}
+.contact-form input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.2rem; border-radius: 8px; color: #fff; font-family: var(--font-main); font-size: 16px; transition: all 0.3s; }
+.contact-form input:focus { outline: none; border-color: var(--text-highlight); box-shadow: 0 0 15px rgba(102, 252, 241, 0.2); background: rgba(102, 252, 241, 0.02);}
+.submit-btn { background: var(--text-highlight); color: #050505; border: none; padding: 1.2rem; border-radius: 8px; font-weight: 700; font-family: var(--font-mono); font-size: 1rem; cursor: pointer; transition: all 0.3s; margin-top: 1rem; }
+.submit-btn:hover { background: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.4); transform: translateY(-2px);}
+.submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none;}
+
+.success-message { display: none; text-align: center; padding: 2rem 0; animation: slideUpFade 0.5s ease forwards; }
+.success-icon { width: 70px; height: 70px; color: var(--text-highlight); margin-bottom: 1.5rem; }
+.success-message h3 { color: #fff; font-family: var(--font-mono); margin-bottom: 0.5rem; font-size: 1.5rem;}
+.success-message p { color: var(--text-secondary); font-size: 1rem; line-height: 1.5;}
+
+/* --- KEYFRAMES --- */
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+@keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+@keyframes pulseDot { 0% { box-shadow: 0 0 5px var(--text-highlight); } 100% { box-shadow: 0 0 15px var(--text-highlight), 0 0 5px var(--text-highlight) inset; } }
+
+/* Animazione dei bordi continui (Serpente Neon) */
+@keyframes scanTop { 0% { left: -100%; } 25%, 100% { left: 100%; } }
+@keyframes scanRight { 0% { top: -100%; } 25%, 100% { top: 100%; } }
+@keyframes scanBottom { 0% { right: -100%; } 25%, 100% { right: 100%; } }
+@keyframes scanLeft { 0% { bottom: -100%; } 25%, 100% { bottom: 100%; } }
+
+/* --- RESPONSIVE MOBILE STRATEGICO --- */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: block; }
+  nav { padding: 1.5rem; height: auto; }
+  header { padding-top: 8rem; }
+  .bio-text { padding: 1.5rem; font-size: 1.05rem;}
+  .download-btn { width: 100%; padding: 1.2rem; font-size: 1.1rem; }
+
+  .timeline { padding-left: 1.5rem; }
+
+  .timeline-dot {
+    left: -1.9rem; /* Compensazione matematica perfetta per il mobile */
+    width: 0.8rem;
+    height: 0.8rem;
+    top: 0.3rem;
+  }
+  .timeline-content { padding: 1.5rem;}
+  .timeline-item { transform: translateX(-15px); }
+
+  .skills-grid { grid-template-columns: 1fr; gap: 1.5rem;}
+  .skills-section.visible .skill-card:nth-child(n) { transition-delay: 0.1s; }
+
+  .modal-content { padding: 2rem 1.5rem; width: 95%; max-height: 90vh; overflow-y: auto; border-radius: 12px;}
+  .close-modal { top: 0.5rem; right: 1rem; }
+}
+
+/* --- NUOVO FOOTER GENERALE (DESKTOP FIRST) --- */
+footer {
+  background-color: rgba(11, 12, 16, 0.95);
+  border-top: 1px solid var(--border-color);
+  padding: 4rem 5%;
+  margin-top: auto;
+  justify-items: left;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 Colonne Uguali */
+  gap: 3rem;
+  max-width: 1100px;
+  margin: 0 0;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: flex-start; /* Tutto allineato a sinistra su PC */
+}
+
+.footer-logo { font-family: var(--font-mono); font-weight: 700; font-size: 2.2rem; color: var(--text-highlight); line-height: 1; }
+.copyright { font-size: 0.85rem; color: var(--text-secondary); font-family: var(--font-mono); line-height: 1.6; margin-top: 0.5rem; }
+
+.footer-heading { font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.2rem; }
+
+.footer-item { display: flex; align-items: center; gap: 0.8rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.95rem; }
+.footer-item a, .footer-link { display: flex; align-items: center; gap: 0.8rem; color: var(--text-primary); text-decoration: none; transition: color 0.2s; font-family: var(--font-mono); font-size: 0.95rem; }
+
+.footer-item a:hover, .footer-link:hover { color: var(--text-highlight); }
+
+/* Icone Generiche SVG */
+.footer-icon {
+  width: 20px;
+  height: 20px;
+  fill: var(--text-primary); /* Base per icone piene come LinkedIn e GitHub */
+  transition: all 0.2s;
+}
+
+/* Base per icone lineari come Mail e Luogo */
+.footer-icon.stroke-icon {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hover per icone piene (LinkedIn/GitHub) */
+.footer-item:hover .footer-icon,
+.footer-item a:hover .footer-icon {
+  fill: var(--text-highlight);
+}
+
+/* FIX: Hover per icone lineari (Mail/Luogo) */
+.footer-item:hover .footer-icon.stroke-icon,
+.footer-item a:hover .footer-icon.stroke-icon {
+  fill: none; /* Mantiene l'interno vuoto/trasparente */
+  stroke: var(--text-highlight); /* Colora solo il bordo */
+}
