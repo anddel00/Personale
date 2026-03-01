@@ -8,296 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/index_style.css">
 
-  <style>
-    :root {
-      --bg-color: #050505;
-      --text-primary: #e2e8f0;
-      --text-highlight: #66fcf1; /* Ciano Neon */
-      --text-secondary: #94a3b8;
-      --border-color: rgba(102, 252, 241, 0.15);
-      --font-main: 'Inter', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    /* FIX SCROLLBAR */
-    html {
-      overflow-y: scroll;
-      scroll-behavior: smooth;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE ed Edge */
-    }
-
-    /* Chrome, Safari, Opera */
-    html::-webkit-scrollbar {
-      display: none;
-    }
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-primary);
-      font-family: var(--font-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* --- BACKGROUND --- */
-    .background-container {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; background: #050505;
-    }
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(120px);
-      opacity: 0.25;
-      width: 35vh;
-      height: 35vh;
-    }
-
-    .blob-1 {
-      top: -10%;
-      left: -10%;
-      background: #4f46e5;
-      animation: orbit-tl-br 40s infinite ease-in-out;
-    }
-
-    .blob-2 {
-      bottom: -10%;
-      right: -10%;
-      background: #0d9488;
-      animation: orbit-br-tl 40s infinite ease-in-out;
-    }
-
-    @keyframes orbit-tl-br {
-      0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(60vw, 60vh) scale(1.1); } 100% { transform: translate(0, 0) scale(1); }
-    }
-    @keyframes orbit-br-tl {
-      0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-60vw, -60vh) scale(1.1); } 100% { transform: translate(0, 0) scale(1); }
-    }
-
-    .grid-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 60px 60px; pointer-events: none; z-index: -1;
-    }
-
-    /* --- NAVIGAZIONE (Stile Profilo) --- */
-    nav {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 2.5rem 5%;
-      width: 100%;
-      position: absolute;
-      top: 0; left: 0;
-      z-index: 200;
-      background: transparent;
-    }
-    .logo { font-family: var(--font-mono); font-weight: 700; font-size: 1.5rem; color: var(--text-highlight); letter-spacing: -1px; z-index: 201; text-decoration: none; line-height: 1; }
-
-    /* Centratura assoluta per i link desktop */
-    .nav-links {
-      list-style: none; display: flex; gap: 2rem; align-items: center;
-      position: absolute; left: 50%; transform: translateX(-50%);
-    }
-
-    /* Effetto Hover "Slide Up" */
-    .nav-links a {
-      position: relative; display: inline-block; text-decoration: none;
-      color: var(--text-primary); font-size: 1rem; font-weight: 400;
-      overflow: hidden;
-    }
-
-    .nav-links a span {
-      display: inline-block; transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
-    }
-
-    .nav-links a::after {
-      content: attr(data-text);
-      position: absolute; left: 0; top: 100%; width: 100%;
-      color: var(--text-highlight);
-      transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
-    }
-
-    .nav-links a:hover span { transform: translateY(-100%); }
-    .nav-links a:hover::after { transform: translateY(-100%); }
-
-    /* --- TASTO LINGUA & CONTENITORE DESTRA --- */
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      z-index: 201;
-    }
-
-    .lang-switch {
-      font-family: var(--font-mono);
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      text-decoration: none;
-      border: 1px solid var(--border-color);
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.05);
-      transition: all 0.3s ease;
-    }
-
-    .lang-switch:hover {
-      color: var(--text-highlight);
-      border-color: var(--text-highlight);
-      background: transparent;
-      box-shadow: 0 0 15px rgba(102, 252, 241, 0.3);
-    }
-
-    /* Hamburger */
-    .hamburger { display: none; cursor: pointer; z-index: 201; width: 30px; height: 20px; position: relative; }
-    .hamburger span { display: block; position: absolute; height: 2px; width: 100%; background: var(--text-highlight); border-radius: 9px; transition: .25s ease-in-out; }
-    .hamburger span:nth-child(1) { top: 0px; } .hamburger span:nth-child(2) { top: 9px; } .hamburger span:nth-child(3) { top: 18px; }
-    .hamburger.open span:nth-child(1) { top: 9px; transform: rotate(135deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; left: -60px; }
-    .hamburger.open span:nth-child(3) { top: 9px; transform: rotate(-135deg); }
-
-    /* Mobile Menu */
-    .mobile-menu { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(20px); z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
-    .mobile-menu.active { opacity: 1; pointer-events: all; }
-    .mobile-link { font-family: var(--font-mono); font-size: 2rem; color: var(--text-primary); text-decoration: none; margin: 1.5rem 0; position: relative; }
-    .mobile-link:hover { color: var(--text-highlight); }
-    .menu-cursor { display: inline-block; width: 10px; height: 2rem; background-color: var(--text-highlight); vertical-align: middle; animation: blink 1s infinite; opacity: 0; }
-    .menu-cursor.typing { opacity: 1; }
-
-    /* Stile per la pagina attiva su Mobile */
-    .mobile-link.active-page .text-content { color: var(--text-highlight); }
-    .mobile-link.active-page .menu-cursor { display: none; }
-
-    /* --- HERO SECTION --- */
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 5%;
-      position: relative;
-      width: 100%;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
-      gap: 4rem;
-      max-width: 1100px;
-      width: 100%;
-      align-items: center;
-    }
-
-    .hero-text { text-align: left; z-index: 2; }
-    .hero-image-container { display: flex; justify-content: center; align-items: center; z-index: 2; }
-
-    .profile-photo-wrapper {
-      position: relative;
-      width: 260px; height: 260px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--text-highlight), #4f46e5);
-      padding: 4px;
-      box-shadow: 0 0 60px rgba(102, 252, 241, 0.25);
-      animation: floatProfile 6s ease-in-out infinite;
-    }
-
-    .profile-photo { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 5px solid #050505; background-color: #111; display: block; }
-
-    @keyframes floatProfile { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-    h1 {
-      font-family: var(--font-main); font-weight: 800; font-size: clamp(2.8rem, 6vw, 4.5rem); line-height: 1.1; margin-bottom: 0.5rem; letter-spacing: -2px;
-      background: linear-gradient(to right, #ffffff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      opacity: 0; animation: fadeUp 1s ease-out forwards;
-    }
-
-    .hero-subtitle {
-      font-family: var(--font-mono); font-size: clamp(0.9rem, 2vw, 1.1rem); color: var(--text-secondary); margin-bottom: 2rem; font-weight: 400;
-      opacity: 0; animation: fadeUp 1s ease-out 0.3s forwards;
-    }
-
-    .dynamic-wrapper {
-      font-family: var(--font-mono);
-      font-size: clamp(1.1rem, 3vw, 1.6rem);
-      color: var(--text-highlight);
-      min-height: 2rem;
-      margin-bottom: 2.5rem;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      opacity: 0; animation: fadeUp 1s ease-out 0.6s forwards;
-    }
-
-    /* --- FOOTER GENERALE (DESKTOP) --- */
-    footer { background-color: rgba(11, 12, 16, 0.95); border-top: 1px solid var(--border-color); padding: 3rem 5%; margin-top: auto; }
-
-    /* Contenitore a riga (orizzontale) con spazio tra gli elementi */
-    .footer-container { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 25rem; }
-
-    .footer-item { display: flex; align-items: center; gap: 0.8rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.9rem; }
-    .footer-item a { display: flex; align-items: center; gap: 0.6rem; color: var(--text-primary); text-decoration: none; transition: color 0.2s; }
-    .footer-item a:hover { color: var(--text-highlight); }
-
-    /* Creiamo le piccole colonne interne (per Social e Privacy) */
-    .social-column, .privacy-links { display: flex; flex-direction: column; gap: 0.8rem; align-items: flex-start; }
-
-    /* Icone */
-    .linkedin-icon, .github-icon { width: 24px; height: 24px; fill: var(--text-primary); transition: fill 0.2s; }
-    .location-icon { width: 24px; height: 24px; stroke: var(--text-primary); transition: stroke 0.2s; }
-
-    /* Hover Icone */
-    .footer-item a:hover .linkedin-icon { fill: #0077b5; }
-    .footer-item a:hover .github-icon { fill: #66FCF1FF }
-
-    .copyright { text-align: center; width: 100%; margin-top: 3rem; font-size: 0.8rem; color: #666; font-family: var(--font-mono); }
-
-    .static-prefix { color: var(--text-secondary); margin-right: 12px; }
-    .cursor { display: inline-block; width: 10px; height: 1.2em; background-color: var(--text-highlight); animation: blink 1s infinite; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px var(--text-highlight); }
-    .cursor.typing { animation: none; opacity: 1; }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    .cta-group { display: flex; gap: 1.5rem; opacity: 0; animation: fadeUp 1s ease-out 0.9s forwards; }
-
-    .btn { padding: 0.9rem 2.2rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; font-family: var(--font-mono); white-space: nowrap; position: relative; }
-    .btn-primary { border: 1px solid var(--text-highlight); color: #050505; background: var(--text-highlight); }
-    .btn-primary:hover { background: transparent; color: var(--text-highlight); box-shadow: 0 0 20px rgba(102, 252, 241, 0.4); }
-    .btn-secondary { color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); }
-    .btn-secondary:hover { border-color: #fff; background: rgba(255,255,255,0.1); color: #fff; }
-
-    /* --- RESPONSIVE MOBILE --- */
-    @media (max-width: 900px) {
-      .nav-links { display: none; }
-      .hamburger { display: block; }
-
-      nav { padding: 1.5rem; height: auto; }
-
-      main { padding: 0 1.5rem; align-items: center; min-height: calc(100vh - 80px); }
-
-      .hero-grid { grid-template-columns: 1fr; gap: 1.5rem; text-align: center; margin-top: -2rem; }
-
-      .hero-text { order: 2; display: flex; flex-direction: column; align-items: center; }
-      .hero-image-container { order: 1; margin-bottom: 0; }
-
-      .profile-photo-wrapper { width: 160px; height: 160px; }
-
-      h1 { text-align: center; width: 100%; font-size: clamp(2.2rem, 8vw, 3rem); margin-bottom: 0.3rem; }
-      .hero-subtitle { text-align: center; width: 100%; margin-bottom: 1rem; font-size: 0.95rem; }
-
-      .dynamic-wrapper { justify-content: center; width: 100%; margin-bottom: 1.5rem; font-size: 1.1rem; }
-
-      .cta-group { flex-direction: column; width: 100%; gap: 0.8rem; }
-      .btn { width: 100%; text-align: center; padding: 0.8rem; }
-
-      .footer-container { flex-direction: column; justify-content: center; text-align: center; gap: 1.5rem; }
-      .privacy-links { flex-direction: column; gap: 0.8rem; align-items: center; }
-    }
-  </style>
 </head>
 <body>
 
@@ -363,26 +75,47 @@
 <footer>
   <div class="footer-container">
 
-    <div class="footer-item">
-      <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-        <circle cx="12" cy="10" r="3"></circle>
-      </svg>
-      <span>Ferrara, Italy</span>
+    <div class="footer-col">
+      <div class="footer-logo">ADF.</div>
+      <div class="copyright">
+        &copy; 2026 Andrea Del Fatto.<br>
+        All rights reserved.
+      </div>
     </div>
 
-    <div class="social-column">
+    <div class="footer-col">
+      <div class="footer-heading">Contacts</div>
+
       <div class="footer-item">
-        <a href="www.linkedin.com/in/andrea-del-fatto-06998427b" target="_blank" rel="noopener noreferrer">
-          <svg class="linkedin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg class="footer-icon stroke-icon" viewBox="0 0 24 24">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span>Ferrara, Italy</span>
+      </div>
+
+      <div class="footer-item">
+        <a href="mailto:andreadelfatto@gmail.com">
+          <svg class="footer-icon stroke-icon" viewBox="0 0 24 24">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          andreadelfatto@gmail.com
+        </a>
+      </div>
+
+      <div class="footer-item">
+        <a href="https://www.linkedin.com/in/andrea-del-fatto-06998427b" target="_blank" rel="noopener noreferrer">
+          <svg class="footer-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
           </svg>
           LinkedIn
         </a>
       </div>
+
       <div class="footer-item">
         <a href="https://github.com/anddel00" target="_blank" rel="noopener noreferrer">
-          <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <svg class="footer-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
           </svg>
           GitHub
@@ -390,18 +123,14 @@
       </div>
     </div>
 
-    <div class="footer-item privacy-links">
-      <a href="privacy.html" class="privacy" title="Privacy Policy">Privacy Policy</a>
-      <a href="cookie.html" class="cookie" title="Cookie Policy">Cookie Policy</a>
+    <div class="footer-col">
+      <div class="footer-heading">Legal</div>
+      <a href="privacy_en.html" class="footer-link" title="Privacy Policy">Privacy Policy</a>
+      <a href="cookie_en.html" class="footer-link" title="Cookie Policy">Cookie Policy</a>
     </div>
 
   </div>
-
-  <div class="copyright">
-    &copy; 2026 Andrea Del Fatto. Tutti i diritti riservati.
-  </div>
 </footer>
-
 <script>
   const hamburger = document.getElementById('hamburgerBtn');
   const mobileMenu = document.getElementById('mobileMenu');
