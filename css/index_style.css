@@ -334,6 +334,8 @@ footer {
   .footer-container { flex-direction: column; gap: 2rem; justify-content: center; }
   .social-column, .privacy-links { align-items: center; text-align: center; }      .privacy-links { flex-direction: column; gap: 0.8rem; align-items: center; }
   .social-column {align-items: center; }
+
+
 }
 
 /*======STILI BANNER PER I COOKIE=====*/
