@@ -290,15 +290,14 @@ footer {
   border-top: 1px solid var(--border-color);
   padding: 4rem 5%;
   margin-top: auto;
-  justify-items: left;
 }
 
 .footer-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 Colonne Uguali */
+  grid-template-columns: repeat(3, 1fr);
   gap: 3rem;
   max-width: 1100px;
-  margin: 0 0;
+  margin: 0 auto; /* Questo centra tutto il footer grande perfettamente! */
 }
 
 .footer-col {
@@ -307,6 +306,7 @@ footer {
   gap: 1.2rem;
   align-items: flex-start; /* Tutto allineato a sinistra su PC */
 }
+
 
 .footer-logo { font-family: var(--font-mono); font-weight: 700; font-size: 2.2rem; color: var(--text-highlight); line-height: 1; }
 .copyright { font-size: 0.85rem; color: var(--text-secondary); font-family: var(--font-mono); line-height: 1.6; margin-top: 0.5rem; }
@@ -384,9 +384,30 @@ footer {
   /* Tasti Link al 100% della larghezza */
   .modal-link-btn, .modal-link-btn-outline { width: 100%; }
 
-  /* Footer Mobile a colonna a sinistra */
-  .footer-container { flex-direction: column; align-items: flex-start; text-align: left; gap: 1.5rem; }
-  .privacy-links { align-items: flex-start; }
+  /* --- NUOVO FOOTER MOBILE --- */
+  .footer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .footer-col {
+    align-items: flex-start; /* Forza l'allineamento a sinistra */
+    text-align: left;
+    width: 100%; /* Risolve il problema dello spazio laterale */
+  }
+
+  /* Assicura che icone e testo siano incollati a sinistra */
+  .footer-item {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .copyright {
+    text-align: left; /* Allinea a sinistra anche il copyright */
+    margin-top: 0.5rem;
+  }
+
 }
 
 /*======STILI BANNER PER I COOKIE=====*/

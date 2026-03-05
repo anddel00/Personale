@@ -228,15 +228,14 @@ footer {
   border-top: 1px solid var(--border-color);
   padding: 4rem 5%;
   margin-top: auto;
-  justify-items: left;
 }
 
 .footer-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 Colonne Uguali */
+  grid-template-columns: repeat(3, 1fr);
   gap: 3rem;
   max-width: 1100px;
-  margin: 0 0;
+  margin: 0 auto; /* Questo centra tutto il footer grande perfettamente! */
 }
 
 .footer-col {
@@ -299,10 +298,18 @@ footer {
 
 /* --- RESPONSIVE MOBILE --- */
 @media (max-width: 900px) {
-  .nav-links { display: none; }
-  .hamburger { display: block; }
+  .nav-links {
+    display: none;
+  }
 
-  nav { padding: 1.5rem; height: auto; }
+  .hamburger {
+    display: block;
+  }
+
+  nav {
+    padding: 1.5rem;
+    height: auto;
+  }
 
   /* Modificato per centrare perfettamente su mobile considerando la nav */
   main {
@@ -318,24 +325,79 @@ footer {
     margin-top: 0; /* Rimosso il margine negativo che tirava su tutto */
   }
 
-  .hero-text { order: 2; display: flex; flex-direction: column; align-items: center; }
-  .hero-image-container { order: 1; margin-bottom: 0; }
+  .hero-text {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-  .profile-photo-wrapper { width: 160px; height: 160px; }
+  .hero-image-container {
+    order: 1;
+    margin-bottom: 0;
+  }
 
-  h1 { text-align: center; width: 100%; font-size: clamp(2.2rem, 8vw, 3rem); margin-bottom: 0.3rem; }
-  .hero-subtitle { text-align: center; width: 100%; margin-bottom: 1rem; font-size: 0.95rem; }
+  .profile-photo-wrapper {
+    width: 160px;
+    height: 160px;
+  }
 
-  .dynamic-wrapper { justify-content: center; width: 100%; margin-bottom: 1.5rem; font-size: 1.1rem; }
+  h1 {
+    text-align: center;
+    width: 100%;
+    font-size: clamp(2.2rem, 8vw, 3rem);
+    margin-bottom: 0.3rem;
+  }
 
-  .cta-group { flex-direction: column; width: 100%; gap: 0.8rem; }
-  .btn { width: 100%; text-align: center; padding: 0.8rem; }
+  .hero-subtitle {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
 
-  .footer-container { flex-direction: column; gap: 2rem; justify-content: center; }
-  .social-column, .privacy-links { align-items: center; text-align: center; }      .privacy-links { flex-direction: column; gap: 0.8rem; align-items: center; }
-  .social-column {align-items: center; }
+  .dynamic-wrapper {
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+  }
 
+  .cta-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.8rem;
+  }
 
+  .btn {
+    width: 100%;
+    text-align: center;
+    padding: 0.8rem;
+  }
+
+  /* --- NUOVO FOOTER MOBILE --- */
+  .footer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .footer-col {
+    align-items: flex-start; /* Forza l'allineamento a sinistra */
+    text-align: left;
+    width: 100%; /* Risolve il problema dello spazio laterale */
+  }
+
+  /* Assicura che icone e testo siano incollati a sinistra */
+  .footer-item {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .copyright {
+    text-align: left; /* Allinea a sinistra anche il copyright */
+    margin-top: 0.5rem;
+  }
 }
 
 /*======STILI BANNER PER I COOKIE=====*/
