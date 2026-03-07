@@ -1,9 +1,9 @@
 :root {
   --bg-color: #050505;
   --text-primary: #e2e8f0;
-  --text-highlight: rgba(102, 252, 241, 0.51);
+  --text-highlight: #66fcf1; /* Ciano Neon */
   --text-secondary: #94a3b8;
-  --border-color: rgba(102, 252, 241, 0.15);
+  --border-color: rgba(102, 252, 241, 0.30);
   --folder-bg: #0a0a0a;
   --font-main: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -38,7 +38,7 @@ nav {
 .logo { font-family: var(--font-mono); font-weight: 700; font-size: 1.5rem; color: var(--text-highlight); letter-spacing: -1px; z-index: 201; text-decoration: none; line-height: 1; }
 
 .nav-links { list-style: none; display: flex; gap: 2rem; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
-.nav-links a { position: relative; display: inline-block; text-decoration: none; color: var(--text-primary); font-size: 1rem; font-weight: 400; overflow: hidden; }
+.nav-links a { position: relative; display: inline-block; text-decoration: none; color: var(--text-primary); font-size: 1.1rem; font-weight: 400; overflow: hidden; }
 .nav-links a span { display: inline-block; transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
 .nav-links a::after { content: attr(data-text); position: absolute; left: 0; top: 100%; width: 100%; color: var(--text-highlight); transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1); }
 .nav-links a:hover span { transform: translateY(-100%); }
@@ -92,7 +92,7 @@ h1 {
 /* --- STACK VIEW --- */
 #stack-view {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 50vh; perspective: 1200px;
+  min-height: 60vh; perspective: 1200px;
   margin-bottom: 3rem; transition: opacity 0.5s ease;
   overflow: hidden; padding: 1rem 0; position: relative;
 }
