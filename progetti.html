@@ -171,14 +171,45 @@
 </footer>
 
 <script>
-  // --- UNLOCK LOGIC ---
+  // --- UNLOCK LOGIC & 3D PARALLAX ---
   const lockContainer = document.getElementById('lock-container');
   const stackView = document.getElementById('stack-view');
   const folderStack = document.getElementById('folderStack');
   const projectsContainer = document.getElementById('projectsContainer');
   const hint = document.getElementById('clickHint');
 
+  let isUnlocked = false; // Controlla se l'archivio è stato aperto
+
+  // 1. Effetto Parallax che segue il mouse
+  document.addEventListener('mousemove', (e) => {
+    if (isUnlocked) return; // Se sbloccato, smette di muoversi
+
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    // Calcola il movimento del mouse (diviso per 40 per renderlo morbido)
+    const moveX = (e.clientX - centerX) / 40;
+    const moveY = (e.clientY - centerY) / 40;
+
+    // Applica l'angolo base (-30Y, 10X) sommandoci il movimento del mouse
+    folderStack.style.transform = `rotateY(${-30 + moveX}deg) rotateX(${10 - moveY}deg) translateX(-10px)`;
+  });
+
+  // 2. Ritorna alla posizione originale se esci col mouse dallo schermo
+  document.addEventListener('mouseleave', () => {
+    if (!isUnlocked) {
+      folderStack.style.transform = `rotateY(-30deg) rotateX(10deg) translateX(-10px)`;
+    }
+  });
+
+  // 3. Logica di Sblocco
   function unlockArchive() {
+    if (isUnlocked) return;
+    isUnlocked = true;
+
+    // Raddrizza la pila verso l'utente un istante prima di farla esplodere!
+    folderStack.style.transform = `rotateY(0deg) rotateX(0deg) scale(1.05)`;
+
     lockContainer.classList.add('unlocked');
     hint.classList.add('fade-out');
 
@@ -199,7 +230,6 @@
 
   lockContainer.addEventListener('click', (e) => { e.stopPropagation(); unlockArchive(); });
   folderStack.addEventListener('click', unlockArchive);
-
   // --- DATABASE ---
   const projects = [
     {
@@ -277,9 +307,12 @@
       title: "Portfolio Senior Engineer",
       year: "2026",
       shortDesc: "Portfolio Personale Sicuro & GDPR Compliant.",
-      fullDesc: "Sviluppo completo di un portfolio per un Senior Mechanical Engineer. Il sito presenta una landing page, un'area profilo e un'innovativa <strong>Area Passioni</strong> protetta. \n Alcune tab e informazioni sono state omesse nella preview per motivi di privacy. \n\nCaratteristiche Tecniche:\n- <strong>Sicurezza Backend:</strong> Protezione area riservata con password personalizzata, verifica lato server (PHP) e hashing per integrità dati.\n- <strong>Analytics:</strong> Configurazione avanzata di Google Analytics 4 con tracciamento 'events' custom e consulenza al cliente.\n- <strong>Compliance:</strong> Gestione GDPR/Cookie completa tramite Iubenda.\n- <strong>Deploy:</strong> Messa in produzione con certificato SSL e protocollo HTTPS.",
+      fullDesc: "Sviluppo completo di un portfolio per un Senior Mechanical Engineer. Il sito presenta una landing page, un'area profilo e un'innovativa <strong>Area Passioni/Interessi</strong> protetta. \n Alcune tab e informazioni sono state omesse nella preview per motivi di privacy. \n\nCaratteristiche Tecniche:\n- <strong>Sicurezza Backend:</strong> Protezione area riservata con password personalizzata, verifica lato server (PHP) e hashing per integrità dati.\n- <strong>Analytics:</strong> Configurazione avanzata di Google Analytics 4 con tracciamento 'events' custom e consulenza al cliente.\n- <strong>Compliance:</strong> Gestione GDPR/Cookie completa tramite Iubenda.\n- <strong>Deploy:</strong> Messa in produzione con certificato SSL e protocollo HTTPS.",
       gallery: [
-        { src: "img/DavideProfilo.png", title: "Profilo " }
+        { src: "img/DavideProfilo.png", title: "Profilo " },
+        { src: "img/davide_protetta.png", title: "Area Personale Sicura"},
+        { src: "img/davide_GA.png", title: "Google Analytics API"}
+
       ],
       tech: ["PHP", "Hashing/Security", "Google Analytics 4", "Iubenda", "SSL/HTTPS"],
       link: "#",
@@ -307,21 +340,52 @@
     const card = document.createElement('div');
     card.className = 'folder-wrapper';
 
+    // Abbiamo aggiunto il div .folder-tilt e .glow-overlay
     card.innerHTML = `
-      <div class="folder-tab"></div>
-      <div class="folder-body" onclick="openModal(${index})">
-        <div class="folder-header-row">
-            <span class="folder-id">/PROJECT_0${index + 1}</span>
-            <span class="folder-id">${p.year}</span>
+      <div class="folder-tilt">
+        <div class="folder-tab"></div>
+        <div class="folder-body" onclick="openModal(${index})">
+          <div class="folder-header-row">
+              <span class="folder-id">/PROJECT_0${index + 1}</span>
+              <span class="folder-id">${p.year}</span>
+          </div>
+          <div class="folder-content-main">
+            <h3 class="folder-title">${p.title}</h3>
+            <p class="folder-preview-text">${p.shortDesc}</p>
+          </div>
+          <div class="folder-action"><span>Apri Cartella</span> ↗</div>
         </div>
-        <div class="folder-content-main">
-          <h3 class="folder-title">${p.title}</h3>
-          <p class="folder-preview-text">${p.shortDesc}</p>
-        </div>
-        <div class="folder-action"><span>Apri Cartella</span> ↗</div>
+        <div class="glow-overlay"></div>
       </div>
     `;
     grid.appendChild(card);
+
+    // --- EFFETTO 3D TILT E GLOW TRACKING ---
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left; // Posizione X del mouse nella card
+      const y = e.clientY - rect.top;  // Posizione Y del mouse nella card
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // Calcola l'inclinazione (max 6 gradi per un effetto elegante e non esagerato)
+      const rotateX = ((y - centerY) / centerY) * -6;
+      const rotateY = ((x - centerX) / centerX) * 6;
+
+      const tiltElement = card.querySelector('.folder-tilt');
+
+      // Applica la rotazione 3D e passa le coordinate X,Y al CSS per il Glow
+      tiltElement.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      tiltElement.style.setProperty('--mouse-x', `${x}px`);
+      tiltElement.style.setProperty('--mouse-y', `${y}px`);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      const tiltElement = card.querySelector('.folder-tilt');
+      // Resetta fluidamente la card quando il mouse esce
+      tiltElement.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    });
   });
 
   // --- MODAL & CAROUSEL LOGIC ---
@@ -529,46 +593,55 @@
     setTimeout(() => { hackEffect(subtitle); }, 500);
   });
 
-  const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+  // --- GOOGLE ANALYTICS 4 (GDPR COMPLIANT) ---
+  const GA_MEASUREMENT_ID = 'G-ZZD5X5BL7Y'; // <-- Inserito il tuo ID reale!
 
   function loadGoogleAnalytics() {
+    // Evita di caricare lo script due volte se l'utente clicca più volte
+    if (document.getElementById('ga-script')) return;
+
+    // Crea il primo tag <script async src="...">
     const script1 = document.createElement('script');
+    script1.id = 'ga-script';
     script1.async = true;
     script1.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
     document.head.appendChild(script1);
 
+    // Crea il secondo tag <script> con le configurazioni
     const script2 = document.createElement('script');
     script2.innerHTML = `
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
+      // Configurazione con IP anonimizzato (best practice per GDPR)
       gtag('config', '${GA_MEASUREMENT_ID}', { 'anonymize_ip': true });
     `;
     document.head.appendChild(script2);
   }
 
+  // --- LOGICA BANNER COOKIE ---
   function handleCookies(choice) {
-    // Salva la scelta nel browser
-    localStorage.setItem('cookieConsent', choice);
+    localStorage.setItem('cookieConsent', choice); // Salva la scelta
+    document.getElementById('cookie-overlay').style.display = 'none'; // Nasconde il banner
+    document.body.style.overflow = 'auto'; // Riabilita lo scroll
 
-    // Nasconde l'overlay bloccante
-    document.getElementById('cookie-overlay').style.display = 'none';
-    document.body.style.overflow = 'auto'; // Riabilita lo scroll della pagina
-
-    // Se ha accettato, fai partire Analytics
-    if (choice === 'accept') { loadGoogleAnalytics(); }
+    // Fa partire Analytics SOLO se l'utente ha cliccato "Accetta tutti"
+    if (choice === 'accept') {
+      loadGoogleAnalytics();
+    }
   }
 
+  // Controllo al caricamento della pagina
   document.addEventListener("DOMContentLoaded", () => {
     const consent = localStorage.getItem('cookieConsent');
     const overlay = document.getElementById('cookie-overlay');
 
     if (!consent) {
-      // Se non ha ancora fatto una scelta, mostra l'overlay e blocca lo scroll
+      // Nessuna scelta: mostra banner e blocca pagina
       overlay.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     } else if (consent === 'accept') {
-      // Se aveva già accettato in passato, carica subito Analytics
+      // Scelta già fatta in passato: carica Analytics silenziosamente
       loadGoogleAnalytics();
     }
   });

@@ -397,6 +397,59 @@
 
     setTimeout(updatePinning, 150);
   }
+
+  // --- GOOGLE ANALYTICS 4 (GDPR COMPLIANT) ---
+  const GA_MEASUREMENT_ID = 'G-ZZD5X5BL7Y'; // <-- Inserito il tuo ID reale!
+
+  function loadGoogleAnalytics() {
+    // Evita di caricare lo script due volte se l'utente clicca più volte
+    if (document.getElementById('ga-script')) return;
+
+    // Crea il primo tag <script async src="...">
+    const script1 = document.createElement('script');
+    script1.id = 'ga-script';
+    script1.async = true;
+    script1.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    document.head.appendChild(script1);
+
+    // Crea il secondo tag <script> con le configurazioni
+    const script2 = document.createElement('script');
+    script2.innerHTML = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      // Configurazione con IP anonimizzato (best practice per GDPR)
+      gtag('config', '${GA_MEASUREMENT_ID}', { 'anonymize_ip': true });
+    `;
+    document.head.appendChild(script2);
+  }
+
+  // --- LOGICA BANNER COOKIE ---
+  function handleCookies(choice) {
+    localStorage.setItem('cookieConsent', choice); // Salva la scelta
+    document.getElementById('cookie-overlay').style.display = 'none'; // Nasconde il banner
+    document.body.style.overflow = 'auto'; // Riabilita lo scroll
+
+    // Fa partire Analytics SOLO se l'utente ha cliccato "Accetta tutti"
+    if (choice === 'accept') {
+      loadGoogleAnalytics();
+    }
+  }
+
+  // Controllo al caricamento della pagina
+  document.addEventListener("DOMContentLoaded", () => {
+    const consent = localStorage.getItem('cookieConsent');
+    const overlay = document.getElementById('cookie-overlay');
+
+    if (!consent) {
+      // Nessuna scelta: mostra banner e blocca pagina
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    } else if (consent === 'accept') {
+      // Scelta già fatta in passato: carica Analytics silenziosamente
+      loadGoogleAnalytics();
+    }
+  });
 </script>
 </body>
 </html>
