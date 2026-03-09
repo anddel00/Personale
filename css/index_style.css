@@ -295,7 +295,25 @@ footer {
 .btn-primary:hover { background: transparent; color: var(--text-highlight); box-shadow: 0 0 20px rgba(102, 252, 241, 0.4); }
 .btn-secondary { color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); }
 .btn-secondary:hover { border-color: #fff; background: rgba(255,255,255,0.1); color: #fff; }
+/* --- ICONA FRECCIA BOTTONE CTA --- */
+.btn {
+  /* Assicura che testo e icona siano allineati perfettamente al centro */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* Spazio tra testo e freccia */
+}
 
+.btn-arrow {
+  width: 20px;
+  height: 20px;
+  /* Animazione fluida come il resto del sito */
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* Quando l'utente passa il mouse sul bottone, la freccia si sposta a destra */
+.btn:hover .btn-arrow {
+  transform: translateX(4px);
+}
 /* --- RESPONSIVE MOBILE --- */
 @media (max-width: 900px) {
   .nav-links {

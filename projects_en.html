@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Projects | Andrea Del Fatto</title>
+  <title>Portfolio | Andrea Del Fatto</title>
 
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="css/progetti_style.css">
+
 </head>
 <body>
 
@@ -57,7 +57,7 @@
     </div>
   </div>
 
-  <div class="click-hint" id="clickHint">Click to unlock archive</div>
+  <div class="click-hint" id="clickHint">Click to unlock the archive</div>
 </div>
 
 <div class="projects-container" id="projectsContainer">
@@ -70,15 +70,19 @@
 
     <div class="modal-left">
       <div class="carousel-container" id="m-carousel"></div>
+
       <button class="carousel-arrow prev" id="c-prev">&#10094;</button>
       <button class="carousel-arrow next" id="c-next">&#10095;</button>
+
       <div class="carousel-scroll-hint" id="m-scroll-hint">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-        Scroll down image
+        Scroll image
       </div>
+
       <div class="carousel-global-overlay" id="m-carousel-overlay">
         <div class="caption-text" id="m-carousel-caption">Image Title</div>
       </div>
+
       <div class="carousel-nav" id="m-dots"></div>
     </div>
 
@@ -93,64 +97,34 @@
   </div>
 </div>
 
-<div class="project-modal" id="contactModal" style="align-items: center;">
-  <div class="modal-content" id="contactModalContent" style="flex-direction: column; height: auto; max-height: 90vh; width: 90%; max-width: 450px; padding: 2.5rem; overflow-y: auto;">
-    <button class="close-modal" id="closeContactModal" style="top: 15px; right: 15px;">&times;</button>
-
-    <div id="contactModalHeader" style="text-align: center; margin-bottom: 1.5rem; width: 100%;">
-      <h2 style="font-family: var(--font-mono); color: #fff; margin-bottom: 0.5rem; font-size: 1.8rem;">Let's get in touch</h2>
-      <p style="color: var(--text-secondary); font-size: 0.95rem;">Leave your details below, and I'll get back to you shortly to arrange a chat.</p>
+<div id="cookie-overlay">
+  <div id="cookie-banner">
+    <div>
+      <div class="cookie-title">Cookie Preferences</div>
+      <div class="cookie-text">
+        This website uses strictly necessary cookies and, with your consent, analytical cookies (Google Analytics) to understand how the portfolio is visited.<br><br>
+        You can read the details in the <a href="privacy.html" title="Privacy Policy">Privacy Policy</a> and <a href="cookie.html" title="Cookie Policy">Cookie Policy</a>.
+      </div>
     </div>
-
-    <form id="contactForm" action="https://formspree.io/f/xqedyegv" method="POST" style="width: 100%; display: flex; flex-direction: column; gap: 1.2rem;">
-
-      <div style="display: flex; flex-direction: column; gap: 0.4rem; text-align: left;">
-        <label for="name" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Name / Recruiter *</label>
-        <input type="text" id="name" name="name" required placeholder="e.g. John Doe" style="box-sizing: border-box; width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(102, 252, 241, 0.2); padding: 1rem; border-radius: 6px; color: #fff; font-family: var(--font-main); font-size: 16px;">
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 0.4rem; text-align: left;">
-        <label for="company" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Company (Optional)</label>
-        <input type="text" id="company" name="company" placeholder="e.g. Tech Corp LLC" style="box-sizing: border-box; width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(102, 252, 241, 0.2); padding: 1rem; border-radius: 6px; color: #fff; font-family: var(--font-main); font-size: 16px;">
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 0.4rem; text-align: left;">
-        <label for="email" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Email *</label>
-        <input type="email" id="email" name="email" required placeholder="john.doe@company.com" style="box-sizing: border-box; width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(102, 252, 241, 0.2); padding: 1rem; border-radius: 6px; color: #fff; font-family: var(--font-main); font-size: 16px;">
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 0.4rem; text-align: left;">
-        <label for="phone" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary);">Phone (Optional)</label>
-        <input type="tel" id="phone" name="phone" placeholder="+1 234 567890" style="box-sizing: border-box; width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(102, 252, 241, 0.2); padding: 1rem; border-radius: 6px; color: #fff; font-family: var(--font-main); font-size: 16px;">
-      </div>
-
-      <button type="submit" id="submitContactBtn" style="width: 100%; background: var(--text-highlight); color: #050505; border: none; padding: 1rem; border-radius: 6px; font-weight: 700; font-family: var(--font-mono); cursor: pointer; font-size: 16px; margin-top: 0.5rem;">Send Message</button>
-    </form>
-
-    <div class="success-message" id="contactSuccessMessage" style="display: none; text-align: center; padding: 2rem 0; width: 100%;">
-      <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-highlight)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 60px; height: 60px; margin-bottom: 1.5rem;">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-      </svg>
-      <h3 style="color: #fff; font-family: var(--font-mono); margin-bottom: 0.5rem; font-size: 1.5rem;">Message Sent!</h3>
-      <p id="contactSuccessText" style="color: var(--text-secondary);">Thank you, I'll be in touch soon.</p>
+    <div class="cookie-buttons">
+      <button class="btn-cookie btn-reject" onclick="handleCookies('reject')">Essential Only</button>
+      <button class="btn-cookie btn-accept" onclick="handleCookies('accept')">Accept All</button>
     </div>
   </div>
 </div>
 
 <footer>
   <div class="footer-container">
-
     <div class="footer-col">
       <div class="footer-logo">ADF.</div>
       <div class="copyright">
         &copy; 2026 Andrea Del Fatto.<br>
-        All right reserved.
+        All rights reserved.
       </div>
     </div>
 
     <div class="footer-col">
-      <div class="footer-heading">Contacts</div>
+      <div class="footer-heading">Contact</div>
 
       <div class="footer-item">
         <svg class="footer-icon stroke-icon" viewBox="0 0 24 24">
@@ -188,9 +162,8 @@
         </a>
       </div>
     </div>
-
     <div class="footer-col">
-      <div class="footer-heading">Legale</div>
+      <div class="footer-heading">Legal</div>
       <a href="privacy.html" class="footer-link" title="Privacy Policy">Privacy Policy</a>
       <a href="cookie.html" class="footer-link" title="Cookie Policy">Cookie Policy</a>
     </div>
@@ -198,26 +171,45 @@
 </footer>
 
 <script>
-  // --- INIZIALIZZAZIONE OBSERVER PER ANIMAZIONI ---
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  const bottomCta = document.querySelector('.bottom-cta');
-  if(bottomCta) observer.observe(bottomCta);
-
-  // --- UNLOCK LOGIC ---
+  // --- UNLOCK LOGIC & 3D PARALLAX ---
   const lockContainer = document.getElementById('lock-container');
   const stackView = document.getElementById('stack-view');
   const folderStack = document.getElementById('folderStack');
   const projectsContainer = document.getElementById('projectsContainer');
   const hint = document.getElementById('clickHint');
 
+  let isUnlocked = false; // Controlla se l'archivio è stato aperto
+
+  // 1. Effetto Parallax che segue il mouse
+  document.addEventListener('mousemove', (e) => {
+    if (isUnlocked) return; // Se sbloccato, smette di muoversi
+
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    // Calcola il movimento del mouse (diviso per 40 per renderlo morbido)
+    const moveX = (e.clientX - centerX) / 40;
+    const moveY = (e.clientY - centerY) / 40;
+
+    // Applica l'angolo base (-30Y, 10X) sommandoci il movimento del mouse
+    folderStack.style.transform = `rotateY(${-30 + moveX}deg) rotateX(${10 - moveY}deg) translateX(-10px)`;
+  });
+
+  // 2. Ritorna alla posizione originale se esci col mouse dallo schermo
+  document.addEventListener('mouseleave', () => {
+    if (!isUnlocked) {
+      folderStack.style.transform = `rotateY(-30deg) rotateX(10deg) translateX(-10px)`;
+    }
+  });
+
+  // 3. Logica di Sblocco
   function unlockArchive() {
+    if (isUnlocked) return;
+    isUnlocked = true;
+
+    // Raddrizza la pila verso l'utente un istante prima di farla esplodere!
+    folderStack.style.transform = `rotateY(0deg) rotateX(0deg) scale(1.05)`;
+
     lockContainer.classList.add('unlocked');
     hint.classList.add('fade-out');
 
@@ -245,27 +237,29 @@
       id: 1,
       title: "Village Vista Manager",
       year: "2024",
-      shortDesc: "Enterprise Management System for Holiday Resorts.",
-      fullDesc: "Enterprise desktop application for comprehensive resort management, developed with a focus on software engineering principles and awarded top marks.\n\nThe system includes:\n- <strong>Front-Desk GUI:</strong> Intuitive interface for quick guest check-in/out.\n- <strong>Admin Dashboard:</strong> Tools for resource tracking, bungalow assignment, and cleaning status management.\n- <strong>Employee Area:</strong> Secure access with granular permission levels.\n\nThe core of the project is a robust <strong>Object-Oriented</strong> architecture based on the <strong>MVC</strong> (Model-View-Controller) pattern for separation of concerns and the <strong>DAO</strong> pattern for SQL database abstraction.",
+      shortDesc: "Property Management System with integrated Booking Engine.",
+      fullDesc: "Enterprise web application functioning as a <strong>PMS (Property Management System) with an integrated Booking Engine</strong>, designed for the comprehensive management of tourist villages and modernized into a <strong>Cloud-Native infrastructure.</strong>\n\nThe system includes:\n- <strong>Booking Engine:</strong> Self-service reservation system for customers with real-time availability checks and payment management.\n- <strong>PMS Dashboard:</strong> Administrative hub for centralized control of accommodations, financial flows, and customer records.\n- <strong>Staff Module:</strong> Dedicated portal for employees for dynamic shift viewing and task management.\n\nThe project combines a rigorous <strong>Object-Oriented</strong> architecture (Java, <strong>MVC</strong> and <strong>DAO</strong> patterns) with a modern infrastructure using <strong>Docker</strong> containers, cloud database (Aiven), and <strong>CI/CD</strong> pipelines for automated deployment (Render).",
       gallery: [
-        { src: "img/villagevistahome_preview.png", title: "Front-Desk Homepage" },
-        { src: "img/villagevista_showroom_preview.png", title: "Accommodation View" },
-        { src: "img/villagevista_management_preview.png", title: "Management Dashboard" },
-        { src: "img/villagevista_login_host_preview.png", title: "Portal Login (Host)" },
-        { src: "img/villagevista_login_admin_preview.png", title: "Portal Login (Admin & Staff)" }
+        { src: "img/villagevista_home.png", title: "Front-Desk Homepage" },
+        { src: "img/villagevista_dashboard.png", title: "Booking Calendar Dashboard" },
+        { src: "img/villagevista_turni.png", title: "Staff Shift Management Dashboard" },
+        { src: "img/Admin_login_desk.png", title: "Admin & Staff Login (Desktop)" },
+        { src: "img/admin_login_mobile.png", title: "Admin & Staff Login (Mobile)" },
+        { src: "img/cliente_mobile.png", title: "Customer Area Login (Mobile)" },
+        { src: "img/dip_mobile.png", title: "Staff Dashboard Sidebar (Mobile)" }
       ],
-      tech: ["Java", "SQL", "MVC Pattern", "DAO Pattern", "Swing/JavaFX", "OOP"],
-      link: "#",
-      github: "https://github.com/anddel00/VillageVista",
+      tech: ["Java", "SQL", "MVC Pattern", "DAO Pattern", "Swing/JavaFX", "OOP", "Cloud-Native", "Docker"],
+      link: "https://villagevista-adf.onrender.com",
+      github: "https://github.com/anddel00/VillageVista_Docker",
       githubFront: "#",
       githubBack: "#"
     },
     {
       id: 2,
-      title: "Event Social Network",
+      title: "Events Social Network",
       year: "2024",
       shortDesc: "Social Platform & QA Testing.",
-      fullDesc: "Project developed for the Software Engineering course, earning the highest possible grade.\n\nThe Software Development Life Cycle (SDLC) followed industry standards, including a rigorous testing phase documented via professional templates.\n\n<strong>Role and Responsibilities:</strong>\nAs <strong>QA (Quality Assurance)</strong>, I drafted and executed functional Test Cases to validate critical features.\nMy team (Watchdogs) managed the full implementation of the Core components:\n- <strong>Frontend & DB:</strong> Home Page development and Database architecture.\n- <strong>Advanced Search:</strong> Complex logic for the Search Bar and dynamic Filter system.",
+      fullDesc: "Project presented for the Software Engineering exam, graded with top marks.\n\nThe Software Development Life Cycle (SDLC) followed industry standards, including a rigorous testing phase documented via professional templates.\n\n<strong>Role and Responsibilities:</strong>\nAs <strong>QA (Quality Assurance)</strong>, I drafted and executed functional Test Cases to validate critical features.\nMy team (Watchdogs) oversaw the entire implementation of the Core components:\n- <strong>Frontend & DB:</strong> Home Page development and Database architecture.\n- <strong>Advanced Search:</strong> Complex logic for the Search Bar and dynamic Filtering system.",
       gallery: [
         { src: "img/progettoeventi_preview.png", title: "Events Network Home" },
         { src: "img/progettoeventi_test1.png", title: "Test Case: Dynamic Filters" },
@@ -281,11 +275,11 @@
       title: "Adelino Libero Website",
       year: "2025",
       shortDesc: "High-Performance Showcase Website.",
-      fullDesc: "Showcase website developed for a private retailer in the gardening sector. The goal was to maximize online visibility and user conversion rates.\n\nI meticulously handled every technical detail:\n- <strong>Advanced CSS:</strong> Sophisticated, responsive layout built without heavy frameworks.\n- <strong>CTA Strategy:</strong> Strategically placed Call-to-Actions to guide users towards contacting the business.\n- <strong>Technical SEO:</strong> Deep code optimization to ensure rapid indexing and high marketability in the local area.",
+      fullDesc: "Showcase website developed for a private merchant in the gardening sector. The goal was to maximize online visibility and user conversion.\n\nI managed every technical detail:\n- <strong>Advanced CSS:</strong> Refined design and responsive layout without heavy frameworks.\n- <strong>CTA Strategy:</strong> Call-to-Actions strategically positioned to guide users toward contact.\n- <strong>Technical SEO:</strong> Deep code optimization to ensure rapid indexing and high marketability in the local area.",
       gallery: [
-        { src: "img/adelinolibero_preview.png", title: "Homepage Showcase" },
+        { src: "img/adelinolibero_preview.png", title: "Showcase Homepage" },
         { src: "img/adelinolibero_preview_2.png", title: "Offer Details" },
-        { src: "img/adelinolibero_preview_3.png", title: "Product Catalog" }
+        { src: "img/adelinolibero_preview_3.png", title: "Catalog" }
       ],
       tech: ["HTML5", "Advanced CSS3", "SEO Strategy", "UX/UI Design"],
       link: "https://liberoadelino.it",
@@ -296,8 +290,8 @@
       id: 4,
       title: "CercaUniversità (CINECA)",
       year: "2025",
-      shortDesc: "Governmental Portal Refactoring (MUR).",
-      fullDesc: "Thesis project completed at CINECA. This involved a massive UI/UX refactoring of the 'Cerca Università' portal for the Italian Ministry of Education and Merit.\n\nThe workflow included:\n1. <strong>Prototyping:</strong> Lo-Fi design using Balsamiq and Hi-Fi prototyping with Figma.\n2. <strong>Development:</strong> Modern frontend implementation using HTML, CSS, and JavaScript.\n3. <strong>Testing & Auditing:</strong> In-depth analysis using <strong>Google Lighthouse</strong> to certify performance, SEO, and strict compliance with <strong>WCAG</strong> accessibility standards.",
+      shortDesc: "Ministerial Portal Refactoring (MUR).",
+      fullDesc: "Thesis project carried out at the CINECA offices. It involves a massive UI/UX refactoring of the 'Cerca Università' portal for the Ministry of Education and Merit.\n\nThe workflow included:\n1. <strong>Prototyping:</strong> Lo-Fi design with Balsamiq and Hi-Fi with Figma.\n2. <strong>Development:</strong> Modern frontend implementation using HTML, CSS, and JavaScript.\n3. <strong>Testing & Audit:</strong> In-depth analysis with <strong>Google Lighthouse</strong> to certify performance, SEO, and compliance with <strong>WCAG</strong> accessibility standards.",
       gallery: [
         { src: "img/cercauniversita_balsamiq.png", title: "Lo-Fi Prototype (Balsamiq)" },
         { src: "img/cercauniversita_figma.png", title: "Hi-Fi Prototype (Figma)" },
@@ -314,9 +308,11 @@
       title: "Senior Engineer Portfolio",
       year: "2026",
       shortDesc: "Secure & GDPR Compliant Personal Portfolio.",
-      fullDesc: "Comprehensive development of a portfolio for a Senior Mechanical Engineer. The site features a landing page, a profile area, and an innovative, secure <strong>Passions Area</strong>. \n Some tabs and specific information have been omitted in the preview for privacy reasons.\n\nTechnical Features:\n- <strong>Backend Security:</strong> Private area protected by custom passwords, server-side verification (PHP), and data hashing for integrity.\n- <strong>Analytics:</strong> Advanced Google Analytics 4 configuration with custom 'events' tracking and client consulting.\n- <strong>Compliance:</strong> Full GDPR/Cookie management implemented via Iubenda.\n- <strong>Deployment:</strong> Production launch with SSL certificate and HTTPS protocol.",
+      fullDesc: "Complete development of a portfolio for a Senior Mechanical Engineer. The site features a landing page, a profile area, and an innovative protected <strong>Passions/Interests Area</strong>. \n Certain tabs and information have been omitted in the preview for privacy reasons. \n\nTechnical Features:\n- <strong>Backend Security:</strong> Protected private area with custom password, server-side verification (PHP), and hashing for data integrity.\n- <strong>Analytics:</strong> Advanced Google Analytics 4 configuration with custom 'events' tracking and client consultation.\n- <strong>Compliance:</strong> Full GDPR/Cookie management via Iubenda.\n- <strong>Deploy:</strong> Production deployment with SSL certificate and HTTPS protocol.",
       gallery: [
-        { src: "img/DavideProfilo.png", title: "Profile Area" }
+        { src: "img/DavideProfilo.png", title: "Profile" },
+        { src: "img/davide_protetta.png", title: "Secure Personal Area"},
+        { src: "img/davide_GA.png", title: "Google Analytics API"}
       ],
       tech: ["PHP", "Hashing/Security", "Google Analytics 4", "Iubenda", "SSL/HTTPS"],
       link: "#",
@@ -325,10 +321,10 @@
     },
     {
       id: 6,
-      title: "This Very Portfolio",
+      title: "This Portfolio",
       year: "Work in Progress",
       shortDesc: "Work in Progress.",
-      fullDesc: "The site you are currently browsing is a live demonstration of my current skill set.\n\nBuilt entirely from scratch using a 'Mobile-First' approach, it leverages modern web technologies to guarantee a fluid experience, appealing aesthetics, and clean code, reflecting my strong attention to detail and performance.",
+      fullDesc: "The website you are browsing is a live example of my current skills.\n\nBuilt from scratch with a 'Mobile-First' approach, it uses modern web technologies to ensure fluidity, aesthetics, and clean code, reflecting my attention to detail and performance.",
       gallery: [
         { src: "img/fotoprofilo.jpg", title: "Work in Progress..." }
       ],
@@ -344,21 +340,52 @@
     const card = document.createElement('div');
     card.className = 'folder-wrapper';
 
+    // Divs .folder-tilt and .glow-overlay added for 3D and glow effects
     card.innerHTML = `
-      <div class="folder-tab"></div>
-      <div class="folder-body" onclick="openModal(${index})">
-        <div class="folder-header-row">
-            <span class="folder-id">/PROJECT_0${index + 1}</span>
-            <span class="folder-id">${p.year}</span>
+      <div class="folder-tilt">
+        <div class="folder-tab"></div>
+        <div class="folder-body" onclick="openModal(${index})">
+          <div class="folder-header-row">
+              <span class="folder-id">/PROJECT_0${index + 1}</span>
+              <span class="folder-id">${p.year}</span>
+          </div>
+          <div class="folder-content-main">
+            <h3 class="folder-title">${p.title}</h3>
+            <p class="folder-preview-text">${p.shortDesc}</p>
+          </div>
+          <div class="folder-action"><span>Open Folder</span> ↗</div>
         </div>
-        <div class="folder-content-main">
-          <h3 class="folder-title">${p.title}</h3>
-          <p class="folder-preview-text">${p.shortDesc}</p>
-        </div>
-        <div class="folder-action"><span>Open Folder</span> ↗</div>
+        <div class="glow-overlay"></div>
       </div>
     `;
     grid.appendChild(card);
+
+    // --- 3D TILT AND GLOW TRACKING EFFECT ---
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // Calculate tilt (max 6 degrees)
+      const rotateX = ((y - centerY) / centerY) * -6;
+      const rotateY = ((x - centerX) / centerX) * 6;
+
+      const tiltElement = card.querySelector('.folder-tilt');
+
+      // Apply 3D rotation and pass X,Y coordinates to CSS for the Glow
+      tiltElement.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      tiltElement.style.setProperty('--mouse-x', `${x}px`);
+      tiltElement.style.setProperty('--mouse-y', `${y}px`);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      const tiltElement = card.querySelector('.folder-tilt');
+      // Smooth reset on mouse leave
+      tiltElement.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    });
   });
 
   // --- MODAL & CAROUSEL LOGIC ---
@@ -373,6 +400,7 @@
   const carouselOverlay = document.getElementById('m-carousel-overlay');
   const carouselCaption = document.getElementById('m-carousel-caption');
 
+  // Arrow nodes and scroll hint
   const btnPrev = document.getElementById('c-prev');
   const btnNext = document.getElementById('c-next');
   const scrollHint = document.getElementById('m-scroll-hint');
@@ -540,7 +568,7 @@
     }
   }
 
-  // --- EFFETTO DECIFRAZIONE HACKER ---
+  // --- HACKER DECRYPTION EFFECT ---
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   function hackEffect(element) {
     let iterations = 0;
@@ -562,108 +590,47 @@
     setTimeout(() => { hackEffect(subtitle); }, 500);
   });
 
-  // --- LOGICA MODALE CONTATTI (CTA BOTTOM) ---
-  const openContactModalBtn = document.getElementById('openContactModal');
-  const closeContactModalBtn = document.getElementById('closeContactModal');
-  const contactModal = document.getElementById('contactModal');
-  const contactForm = document.getElementById('contactForm');
-  const submitContactBtn = document.getElementById('submitContactBtn');
-  const contactModalHeader = document.getElementById('contactModalHeader');
-  const contactSuccessMessage = document.getElementById('contactSuccessMessage');
-  const contactSuccessText = document.getElementById('contactSuccessText');
-
-  openContactModalBtn.addEventListener('click', () => {
-    contactModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    contactForm.style.display = 'flex';
-    contactModalHeader.style.display = 'block';
-    contactSuccessMessage.style.display = 'none';
-    submitContactBtn.textContent = 'Send Message';
-    submitContactBtn.disabled = false;
-    contactForm.reset();
-  });
-
-  const chiudiContactModale = () => { contactModal.classList.remove('active'); document.body.style.overflow = 'auto'; };
-  closeContactModalBtn.addEventListener('click', chiudiContactModale);
-  contactModal.addEventListener('click', (e) => { if (e.target === contactModal) chiudiContactModale(); });
-
-  contactForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    submitContactBtn.textContent = 'Sending...';
-    submitContactBtn.disabled = true;
-
-    const formData = new FormData(contactForm);
-    const nome = formData.get('name');
-    const azienda = formData.get('company');
-
-    let messaggioGenerato = `Dear Andrea,\n\nI am ${nome}`;
-    if (azienda && azienda.trim() !== "") { messaggioGenerato += ` from ${azienda}`; }
-    messaggioGenerato += `.\nI visited your projects page and would like to discuss a potential collaboration.\n\nContact Details:\nName: ${nome}\nEmail: ${formData.get('email')}\nPhone: ${formData.get('phone') || 'Not provided'}`;
-
-    formData.append('message', messaggioGenerato);
-
-    try {
-      const response = await fetch(contactForm.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
-      if (response.ok) {
-        contactForm.style.display = 'none'; contactModalHeader.style.display = 'none';
-        contactSuccessText.textContent = `Excellent ${nome}, I have received your request. Talk to you soon!`;
-        contactSuccessMessage.style.display = 'block';
-      } else { throw new Error('Network error'); }
-    } catch (error) {
-      alert("An error occurred while sending. Please try again or email me at andreadelfatto@gmail.com");
-      submitContactBtn.textContent = 'Send Message'; submitContactBtn.disabled = false;
-    }
-  });
-
   // --- GOOGLE ANALYTICS 4 (GDPR COMPLIANT) ---
   const GA_MEASUREMENT_ID = 'G-ZZD5X5BL7Y'; // <-- Inserito il tuo ID reale!
 
   function loadGoogleAnalytics() {
-    // Evita di caricare lo script due volte se l'utente clicca più volte
     if (document.getElementById('ga-script')) return;
 
-    // Crea il primo tag <script async src="...">
     const script1 = document.createElement('script');
     script1.id = 'ga-script';
     script1.async = true;
     script1.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
     document.head.appendChild(script1);
 
-    // Crea il secondo tag <script> con le configurazioni
     const script2 = document.createElement('script');
     script2.innerHTML = `
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      // Configurazione con IP anonimizzato (best practice per GDPR)
       gtag('config', '${GA_MEASUREMENT_ID}', { 'anonymize_ip': true });
     `;
     document.head.appendChild(script2);
   }
 
-  // --- LOGICA BANNER COOKIE ---
+  // --- COOKIE BANNER LOGIC ---
   function handleCookies(choice) {
-    localStorage.setItem('cookieConsent', choice); // Salva la scelta
-    document.getElementById('cookie-overlay').style.display = 'none'; // Nasconde il banner
-    document.body.style.overflow = 'auto'; // Riabilita lo scroll
+    localStorage.setItem('cookieConsent', choice);
+    document.getElementById('cookie-overlay').style.display = 'none';
+    document.body.style.overflow = 'auto';
 
-    // Fa partire Analytics SOLO se l'utente ha cliccato "Accetta tutti"
     if (choice === 'accept') {
       loadGoogleAnalytics();
     }
   }
 
-  // Controllo al caricamento della pagina
   document.addEventListener("DOMContentLoaded", () => {
     const consent = localStorage.getItem('cookieConsent');
     const overlay = document.getElementById('cookie-overlay');
 
     if (!consent) {
-      // Nessuna scelta: mostra banner e blocca pagina
       overlay.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     } else if (consent === 'accept') {
-      // Scelta già fatta in passato: carica Analytics silenziosamente
       loadGoogleAnalytics();
     }
   });

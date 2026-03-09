@@ -63,8 +63,13 @@
         <span id="skill-text"></span><span class="cursor">&nbsp;</span>
       </div>
       <div class="cta-group">
-        <a href="mailto:andreadelfatto@gmail.com" class="btn btn-primary">Invia una mail</a>
-        <a href="profilo.html" class="btn btn-secondary">Scopri chi sono &rarr;</a>
+        <a href="profilo.html" id="cta-profilo" class="btn btn-primary">
+          Scopri chi sono
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>        <a href="mailto:andreadelfatto@gmail.com" id="cta-email" class="btn btn-secondary">Invia una email</a>
       </div>
     </div>
     <div class="hero-image-container fade-in">
@@ -290,6 +295,34 @@
       loadGoogleAnalytics();
     }
   });
+
+  // --- TRACCIAMENTO EVENTI CTA (GA4) ---
+  const ctaEmail = document.getElementById('cta-email');
+  const ctaProfilo = document.getElementById('cta-profilo');
+
+  if (ctaEmail) {
+    ctaEmail.addEventListener('click', () => {
+      // Controlla che Analytics sia attivo (cookie accettati)
+      if (typeof gtag === 'function') {
+        gtag('event', 'click_cta_email', {
+          'event_category': 'Engagement',
+          'event_label': 'Pulsante Invia Mail (Home)'
+        });
+      }
+    });
+  }
+
+  if (ctaProfilo) {
+    ctaProfilo.addEventListener('click', () => {
+      // Controlla che Analytics sia attivo
+      if (typeof gtag === 'function') {
+        gtag('event', 'click_cta_profilo', {
+          'event_category': 'Engagement',
+          'event_label': 'Pulsante Scopri chi sono (Home)'
+        });
+      }
+    });
+  }
 </script>
 </body>
 </html>
