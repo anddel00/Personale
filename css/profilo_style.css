@@ -304,6 +304,9 @@ footer { background-color: rgba(11, 12, 16, 0.95); border-top: 1px solid var(--b
     top: 10vh; /* Su mobile si ferma più in alto */
     height: 75vh;
     max-width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+
   }
   .timeline-track { padding: 2rem 1.5rem; }
   .timeline-section { margin-bottom: 3rem; }
