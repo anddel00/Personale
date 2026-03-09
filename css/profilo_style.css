@@ -65,49 +65,41 @@ h1 { font-family: var(--font-main); font-size: clamp(2.5rem, 6vw, 3.5rem); font-
 .download-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); animation: shine 5s infinite; }
 .download-btn:hover { background: transparent; color: var(--text-highlight); box-shadow: 0 0 25px rgba(102, 252, 241, 0.4); transform: translateY(-3px); }
 
-/* --- WRAPPER SCROLLABILE (ESPERIENZA & FORMAZIONE) --- */
+/* --- EFFETTO APPLE SCROLL-PINNING --- */
+.pin-spacer {
+  position: relative;
+  width: 100%;
+  margin-bottom: 4rem;
+}
+
 .timeline-wrapper {
-  padding: 3rem 5%;
-  max-width: 70%; /* La tua larghezza aggiornata */
-  margin: 0 auto 6rem auto;
+  position: sticky;
+  top: 15vh; /* Il punto in cui la scatola si ferma sullo schermo */
+  max-width: 70%;
+  margin: 0 auto;
+  height: 70vh; /* Finestra alta il 70% dello schermo */
+  overflow: hidden; /* TAGLIA IL TESTO IN ECCESSO: Niente scrollbar interne! */
 
-  /* IL SEGRETO DELLO SCROLL INTERNO */
-  max-height: 75vh; /* Altezza fissa: occupa 3/4 dello schermo */
-  overflow-y: auto; /* Attiva lo scorrimento indipendente */
-
-  /* Stile estetico per far capire che è un contenitore separato */
+  /* Stile estetico inalterato */
   background: rgba(10, 12, 16, 0.4);
   border: 1px solid var(--border-color);
   border-radius: 24px;
   backdrop-filter: blur(10px);
   box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 20px 40px rgba(0,0,0,0.5);
+  z-index: 10;
 }
 
-/* --- SCROLLBAR PERSONALIZZATA AL NEON PER IL WRAPPER --- */
-.timeline-wrapper {
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: var(--text-highlight) transparent;
-}
-.timeline-wrapper::-webkit-scrollbar {
-  width: 6px; /* Chrome/Safari/Edge */
-}
-.timeline-wrapper::-webkit-scrollbar-track {
-  background: transparent;
-  margin: 20px 0; /* Stacca la scrollbar dai bordi arrotondati */
-}
-.timeline-wrapper::-webkit-scrollbar-thumb {
-  background-color: var(--text-highlight);
-  border-radius: 10px;
+.timeline-track {
+  padding: 3rem 5% 1rem 5%; /* Aggiunto 1rem in fondo invece di 3rem */  will-change: transform; /* Dice al browser di usare l'accelerazione hardware */
+  transition: transform 0.1s ease-out; /* Rende il movimento morbido come il burro */
 }
 
-/* --- SEZIONI INTERNE AL WRAPPER --- */
 .timeline-section {
   margin-bottom: 4rem;
 }
 .timeline-section:last-child {
-  margin-bottom: 1rem; /* Meno spazio in fondo all'ultimo elemento */
+  margin-bottom:0;
 }
-
 /* --- SKILLS --- */
 .skills-section {
   padding: 0 5% 5rem 5%;
@@ -302,18 +294,18 @@ footer { background-color: rgba(11, 12, 16, 0.95); border-top: 1px solid var(--b
   .nav-links { display: none; }
   .hamburger { display: block; }
   nav { padding: 1.5rem; height: auto; }
-  header { padding-top: 8rem; }
-  .bio-text { padding: 1.5rem; font-size: 1.05rem;}
+  header { padding-top: 8rem;}
+  .bio-text { padding: 1.5rem; font-size: 1.05rem; text-align: left;}
   .download-btn { width: 100%; padding: 1.2rem; font-size: 1.1rem; }
 
-  /* --- TIMELINE WRAPPER (Scorrimento interno Mobile) --- */
+  /* --- MOBILE WRAPPER --- */
+  .pin-spacer { margin-bottom: 3rem; }
   .timeline-wrapper {
-    padding: 2rem 1.5rem;
-    max-height: 70vh; /* Finestra alta 70% dello schermo */
+    top: 10vh; /* Su mobile si ferma più in alto */
+    height: 75vh;
     border-radius: 16px;
-    margin-bottom: 4rem;
-    max-width: 100%;
   }
+  .timeline-track { padding: 2rem 1.5rem; }
   .timeline-section { margin-bottom: 3rem; }
   .timeline { padding-left: 1.5rem; }
   .timeline-dot { left: -1.9rem; width: 0.8rem; height: 0.8rem; top: 0.3rem; }

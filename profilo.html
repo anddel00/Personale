@@ -53,7 +53,9 @@
   <button class="download-btn" id="openModalBtn">Richiedi CV Completo</button>
 </header>
 
+<div class="pin-spacer">
 <div class="timeline-wrapper">
+  <div class="timeline-track">
   <section class="timeline-section">
     <h2 class="section-title">Esperienza Professionale</h2>
     <div class="timeline" id="timeline-exp">
@@ -91,7 +93,13 @@
       </div>
     </div>
   </section>
+  </div>
+  </div>
+  </div>
 
+  <div class="pin-spacer">
+    <div class="timeline-wrapper">
+      <div class="timeline-track">
   <section class="timeline-section">
     <h2 class="section-title">Formazione Accademica</h2>
     <div class="timeline" id="timeline-edu">
@@ -121,6 +129,8 @@
       </div>
     </div>
   </section>
+</div>
+</div>
 </div>
 <section class="skills-section fade-in" id="skillsSection">
   <h2 class="section-title">Competenze & Skills</h2>
@@ -158,7 +168,7 @@
         Soft Skills
       </h3>
       <div class="skill-tags">
-        <span class="tag">Problem Solving</span><span class="tag">Team Work</span><span class="tag">Autonomia</span><span class="tag">Com. Tecnica</span><span class="tag">Stakeholder Mng.</span>
+        <span class="tag">Problem Solving</span><span class="tag">Team Work</span><span class="tag">Autonomia</span><span class="tag">Comunicazione Tecnica</span><span class="tag">Stakeholder Mng.</span><span>Proattività</span>
       </div>
     </div>
   </div>
@@ -318,6 +328,63 @@
       cursorSpan.classList.remove('typing'); await new Promise(r => setTimeout(r, 200));
     }
   }
+
+  // --- MOTORE APPLE SCROLL-PINNING (MULTIDINAMICO) ---
+  const pinSpacers = document.querySelectorAll('.pin-spacer');
+
+  if (pinSpacers.length > 0) {
+    function updatePinning() {
+      pinSpacers.forEach(spacer => {
+        const wrapper = spacer.querySelector('.timeline-wrapper');
+        const track = spacer.querySelector('.timeline-track');
+        if (!wrapper || !track) return;
+
+        const trackHeight = track.getBoundingClientRect().height;
+        const wrapperHeight = wrapper.getBoundingClientRect().height;
+
+        // Ho ridotto il respiro da 100px a 20px per fermare lo scroll appena finisce la card!
+        const scrollDistance = trackHeight - wrapperHeight + 20;
+
+        if (scrollDistance > 0) {
+          spacer.style.height = `${wrapperHeight + scrollDistance}px`;
+        } else {
+          spacer.style.height = 'auto'; // Se la card è corta, niente scroll interno!
+        }
+      });
+    }
+
+    function onScroll() {
+      pinSpacers.forEach(spacer => {
+        const wrapper = spacer.querySelector('.timeline-wrapper');
+        const track = spacer.querySelector('.timeline-track');
+        if (!wrapper || !track) return;
+
+        const trackHeight = track.getBoundingClientRect().height;
+        const wrapperHeight = wrapper.getBoundingClientRect().height;
+        const scrollDistance = trackHeight - wrapperHeight + 20;
+
+        if(scrollDistance <= 0) return;
+
+        const spacerRect = spacer.getBoundingClientRect();
+
+        // Questo comando legge dinamicamente il CSS (15vh su PC, 10vh su Mobile) per una precisione assoluta
+        const stickyTop = parseInt(window.getComputedStyle(wrapper).top, 10);
+
+        let scrolledPast = stickyTop - spacerRect.top;
+
+        if (scrolledPast < 0) scrolledPast = 0;
+        if (scrolledPast > scrollDistance) scrolledPast = scrollDistance;
+
+        track.style.transform = `translateY(-${scrolledPast}px)`;
+      });
+    }
+
+    window.addEventListener('resize', updatePinning);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    setTimeout(updatePinning, 150);
+  }
+
 </script>
 </body>
 </html>
