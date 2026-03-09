@@ -12,7 +12,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 ::-webkit-scrollbar { display: none; }
 html { scrollbar-width: none; -ms-overflow-style: none; overflow-y: scroll; scroll-behavior: smooth; }
-body { background-color: var(--bg-color); color: var(--text-primary); font-family: var(--font-main); overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; position: relative; }
+body { background-color: var(--bg-color); color: var(--text-primary); font-family: var(--font-main); overflow-x: clip; display: flex; flex-direction: column; min-height: 100vh; position: relative; }
 header, .timeline-wrapper, .skills-section { line-height: 1.6; }
 
 /* --- NAVIGAZIONE --- */
@@ -65,16 +65,79 @@ h1 { font-family: var(--font-main); font-size: clamp(2.5rem, 6vw, 3.5rem); font-
 .download-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); animation: shine 5s infinite; }
 .download-btn:hover { background: transparent; color: var(--text-highlight); box-shadow: 0 0 25px rgba(102, 252, 241, 0.4); transform: translateY(-3px); }
 
-/* --- TIMELINE --- */
-.timeline-wrapper { padding: 2rem 5% 5rem 5%; max-width: 900px; margin: 0 auto; position: relative; z-index: 10; pointer-events: auto; }
-.timeline-section { margin-bottom: 5rem; }
+/* --- WRAPPER SCROLLABILE (ESPERIENZA & FORMAZIONE) --- */
+.timeline-wrapper {
+  padding: 3rem 5%;
+  max-width: 70%; /* La tua larghezza aggiornata */
+  margin: 0 auto 6rem auto;
+
+  /* IL SEGRETO DELLO SCROLL INTERNO */
+  max-height: 75vh; /* Altezza fissa: occupa 3/4 dello schermo */
+  overflow-y: auto; /* Attiva lo scorrimento indipendente */
+
+  /* Stile estetico per far capire che è un contenitore separato */
+  background: rgba(10, 12, 16, 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 20px 40px rgba(0,0,0,0.5);
+}
+
+/* --- SCROLLBAR PERSONALIZZATA AL NEON PER IL WRAPPER --- */
+.timeline-wrapper {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--text-highlight) transparent;
+}
+.timeline-wrapper::-webkit-scrollbar {
+  width: 6px; /* Chrome/Safari/Edge */
+}
+.timeline-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 20px 0; /* Stacca la scrollbar dai bordi arrotondati */
+}
+.timeline-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--text-highlight);
+  border-radius: 10px;
+}
+
+/* --- SEZIONI INTERNE AL WRAPPER --- */
+.timeline-section {
+  margin-bottom: 4rem;
+}
+.timeline-section:last-child {
+  margin-bottom: 1rem; /* Meno spazio in fondo all'ultimo elemento */
+}
+
+/* --- SKILLS --- */
+.skills-section {
+  padding: 0 5% 5rem 5%;
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
 .section-title { font-family: var(--font-mono); font-size: 1.8rem; color: #fff; margin-bottom: 3.5rem; border-left: 4px solid var(--text-highlight); padding-left: 1.2rem; display: inline-block; letter-spacing: -1px; }
 .timeline { position: relative; padding-left: 2.5rem; }
 .timeline::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0; background: linear-gradient(to bottom, var(--text-highlight), rgba(102,252,241,0.1)); transition: height 1.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .timeline.draw-line::before { height: 100%; }
-.timeline-item { margin-bottom: 4rem; position: relative; opacity: 0; transform: translateX(-30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.timeline-item.visible { opacity: 1; transform: translateX(0); }
-.timeline-dot { position: absolute; left: -2.95rem; top: 0.2rem; width: 1rem; height: 1rem; background: var(--bg-color); border: 2px solid var(--text-highlight); border-radius: 50%; box-shadow: 0 0 10px var(--text-highlight); z-index: 2; animation: pulseDot 3s infinite alternate; }
+.timeline-item {
+  margin-bottom: 4rem;
+  position: relative;
+  opacity: 0;
+
+  /* Parte leggermente più lontano per dare respiro all'animazione */
+  transform: translateX(-40px);
+
+  /* Aumentata la durata a 1.2s e usata una curva "ease-out-quint" super morbida */
+  transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.timeline-item.visible {
+  opacity: 1;
+  transform: translateX(0);
+  /* Aspetta 0.25 secondi prima di iniziare l'animazione di entrata */
+  transition-delay: 0.5s;
+}.timeline-dot { position: absolute; left: -2.95rem; top: 0.2rem; width: 1rem; height: 1rem; background: var(--bg-color); border: 2px solid var(--text-highlight); border-radius: 50%; box-shadow: 0 0 10px var(--text-highlight); z-index: 2; animation: pulseDot 3s infinite alternate; }
 .timeline-date { font-family: var(--font-mono); color: var(--text-highlight); font-size: 0.9rem; margin-bottom: 0.8rem; display: inline-block; padding: 0.3rem 0.8rem; background: rgba(102, 252, 241, 0.1); border-radius: 20px; }
 .timeline-content { background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .timeline-content:hover { transform: translateY(-8px) scale(1.01); border-color: var(--text-highlight); box-shadow: 0 15px 30px rgba(0,0,0,0.6), 0 0 20px rgba(102, 252, 241, 0.1); }
@@ -89,15 +152,24 @@ h1 { font-family: var(--font-main); font-size: clamp(2.5rem, 6vw, 3.5rem); font-
 .timeline-content strong { color: #fff; }
 
 /* --- SKILLS --- */
-.skills-section { padding: 0 5% 5rem 5%; max-width: 1000px; margin: 0 auto; position: relative; z-index: 10; pointer-events: auto;}
+.skills-section {
+  margin-bottom: 5rem; /* Essendo l'ultima, non ha bisogno del margine gigante sotto */
+}
 .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
 .skill-card { background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(0,0,0,0.4)); border: 1px solid var(--border-color); border-radius: 16px; padding: 2rem; opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); }
 .skills-section.visible .skill-card { opacity: 1; transform: translateY(0); }
-.skills-section.visible .skill-card:nth-child(1) { transition-delay: 0.1s; }
-.skills-section.visible .skill-card:nth-child(2) { transition-delay: 0.2s; }
-.skills-section.visible .skill-card:nth-child(3) { transition-delay: 0.3s; }
-.skills-section.visible .skill-card:nth-child(4) { transition-delay: 0.4s; }
-.skill-card:hover { transform: translateY(-10px) !important; border-color: var(--text-highlight); box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(102, 252, 241, 0.05); }
+.skills-section.visible .skill-card:nth-child(1) { transition-delay: 0.4s; }
+.skills-section.visible .skill-card:nth-child(2) { transition-delay: 0.6s; }
+.skills-section.visible .skill-card:nth-child(3) { transition-delay: 0.8s; }
+.skills-section.visible .skill-card:nth-child(4) { transition-delay: 1s; }
+.skill-card:hover {
+  transform: translateY(-10px) !important;
+  border-color: var(--text-highlight);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(102, 252, 241, 0.05);
+  /* --- FIX ANIMAZIONE --- */
+  transition-delay: 0s !important; /* Rimuove il ritardo dell'animazione di entrata */
+  transition-duration: 0.3s; /* Rende la reazione al passaggio del mouse molto più scattante (rispetto allo 0.6s di base) */
+}
 .skill-card h3 { color: #fff; font-family: var(--font-mono); font-size: 1.2rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;}
 .skill-tags { display: flex; flex-wrap: wrap; gap: 0.8rem; }
 .tag { font-size: 0.85rem; font-family: var(--font-mono); background: rgba(102, 252, 241, 0.03); color: var(--text-primary); padding: 0.4rem 1rem; border-radius: 6px; border: 1px solid rgba(102, 252, 241, 0.2); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -224,22 +296,38 @@ footer { background-color: rgba(11, 12, 16, 0.95); border-top: 1px solid var(--b
 @keyframes tracePerfect { 100% { stroke-dashoffset: -100; } }
 @keyframes neonTurnOff { 0% { text-shadow: 0 0 10px var(--text-highlight), 0 0 20px var(--text-highlight), 0 0 40px var(--text-highlight); color: #fff; } 15% { text-shadow: 0 0 15px var(--text-highlight); } 25% { text-shadow: 0 0 25px var(--text-highlight), 0 0 50px var(--text-highlight); } 100% { text-shadow: none; color: #fff; } }
 
-/* --- RESPONSIVE MOBILE STRATEGICO --- */
+/* --- RESPONSIVE MOBILE  --- */
 @media (max-width: 900px) {
+  /* Generali Navbar e Header */
   .nav-links { display: none; }
   .hamburger { display: block; }
   nav { padding: 1.5rem; height: auto; }
   header { padding-top: 8rem; }
   .bio-text { padding: 1.5rem; font-size: 1.05rem;}
   .download-btn { width: 100%; padding: 1.2rem; font-size: 1.1rem; }
+
+  /* --- TIMELINE WRAPPER (Scorrimento interno Mobile) --- */
+  .timeline-wrapper {
+    padding: 2rem 1.5rem;
+    max-height: 70vh; /* Finestra alta 70% dello schermo */
+    border-radius: 16px;
+    margin-bottom: 4rem;
+    max-width: 100%;
+  }
+  .timeline-section { margin-bottom: 3rem; }
   .timeline { padding-left: 1.5rem; }
   .timeline-dot { left: -1.9rem; width: 0.8rem; height: 0.8rem; top: 0.3rem; }
   .timeline-content { padding: 1.5rem;}
   .timeline-item { transform: translateX(-15px); }
+
+  /* --- SKILLS MOBILE --- */
   .skills-grid { grid-template-columns: 1fr; gap: 1.5rem;}
   .skills-section.visible .skill-card:nth-child(n) { transition-delay: 0.1s; }
+
+  /* --- MODAL E FOOTER --- */
   .modal-content { padding: 2rem 1.5rem; width: 95%; max-height: 90vh; overflow-y: auto; border-radius: 12px;}
   .close-modal { top: 0.5rem; right: 1rem; }
+
   .footer-container { display: grid !important; grid-template-columns: 1fr !important; gap: 2.5rem; }
   .footer-col { align-items: flex-start; text-align: left; width: 100%; }
   .footer-item { justify-content: flex-start; width: 100%; }
