@@ -329,46 +329,50 @@
     }
   }
 
-  // --- MOTORE APPLE SCROLL-PINNING (MULTIDINAMICO) ---
+  // --- MOTORE APPLE SCROLL-PINNING (OTTIMIZZATO PER PRODUZIONE) ---
   const pinSpacers = document.querySelectorAll('.pin-spacer');
 
   if (pinSpacers.length > 0) {
+    let ticking = false;
+
     function updatePinning() {
       pinSpacers.forEach(spacer => {
         const wrapper = spacer.querySelector('.timeline-wrapper');
         const track = spacer.querySelector('.timeline-track');
         if (!wrapper || !track) return;
 
+        // Reset momentaneo per calcolare le altezze reali
+        track.style.transform = 'translateY(0px)';
+
         const trackHeight = track.getBoundingClientRect().height;
         const wrapperHeight = wrapper.getBoundingClientRect().height;
-
-        // Ho ridotto il respiro da 100px a 20px per fermare lo scroll appena finisce la card!
         const scrollDistance = trackHeight - wrapperHeight + 20;
 
         if (scrollDistance > 0) {
           spacer.style.height = `${wrapperHeight + scrollDistance}px`;
         } else {
-          spacer.style.height = 'auto'; // Se la card è corta, niente scroll interno!
+          spacer.style.height = 'auto';
         }
+
+        // SALVIAMO IN CACHE I VALORI PESANTI: Evita il Layout Thrashing sullo scroll
+        spacer.dataset.scrollDistance = scrollDistance;
+        wrapper.dataset.stickyTop = parseInt(window.getComputedStyle(wrapper).top, 10) || 0;
+
+        // Riapplica la posizione per non far saltare la grafica in caso di resize
+        doScrollUpdate();
       });
     }
 
-    function onScroll() {
+    function doScrollUpdate() {
       pinSpacers.forEach(spacer => {
-        const wrapper = spacer.querySelector('.timeline-wrapper');
         const track = spacer.querySelector('.timeline-track');
-        if (!wrapper || !track) return;
+        const scrollDistance = parseFloat(spacer.dataset.scrollDistance || 0);
 
-        const trackHeight = track.getBoundingClientRect().height;
-        const wrapperHeight = wrapper.getBoundingClientRect().height;
-        const scrollDistance = trackHeight - wrapperHeight + 20;
+        if (scrollDistance <= 0) return;
 
-        if(scrollDistance <= 0) return;
-
+        const wrapper = spacer.querySelector('.timeline-wrapper');
+        const stickyTop = parseInt(wrapper.dataset.stickyTop || 0, 10);
         const spacerRect = spacer.getBoundingClientRect();
-
-        // Questo comando legge dinamicamente il CSS (15vh su PC, 10vh su Mobile) per una precisione assoluta
-        const stickyTop = parseInt(window.getComputedStyle(wrapper).top, 10);
 
         let scrolledPast = stickyTop - spacerRect.top;
 
@@ -377,6 +381,15 @@
 
         track.style.transform = `translateY(-${scrolledPast}px)`;
       });
+      ticking = false; // Permette al prossimo frame di animarsi
+    }
+
+    function onScroll() {
+      // requestAnimationFrame sincronizza lo script con i 60hz/120hz del monitor
+      if (!ticking) {
+        window.requestAnimationFrame(doScrollUpdate);
+        ticking = true;
+      }
     }
 
     window.addEventListener('resize', updatePinning);
@@ -384,7 +397,6 @@
 
     setTimeout(updatePinning, 150);
   }
-
 </script>
 </body>
 </html>

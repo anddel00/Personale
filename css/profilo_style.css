@@ -90,8 +90,9 @@ h1 { font-family: var(--font-main); font-size: clamp(2.5rem, 6vw, 3.5rem); font-
 }
 
 .timeline-track {
-  padding: 3rem 5% 1rem 5%; /* Aggiunto 1rem in fondo invece di 3rem */  will-change: transform; /* Dice al browser di usare l'accelerazione hardware */
-  transition: transform 0.1s ease-out; /* Rende il movimento morbido come il burro */
+  padding: 3rem 5% 1rem 5%;
+  will-change: transform;
+  /
 }
 
 .timeline-section {
