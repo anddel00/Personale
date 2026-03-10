@@ -9,19 +9,30 @@ const hint = document.getElementById('clickHint');
 
 let isUnlocked = false;
 
-// 1. Effetto Parallax che segue il mouse
+// 1. Effetto Parallax che segue il mouse (OTTIMIZZATO SAFARI)
+let isStackTicking = false; // Flag indipendente per la pila
+
 document.addEventListener('mousemove', (e) => {
-  if (isUnlocked) return;
+  if (isUnlocked) return; // Se sbloccato, smette di muoversi
 
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
+  // Lasciamo che il monitor decida quando disegnare il frame (60 FPS fluidi)
+  if (!isStackTicking) {
+    window.requestAnimationFrame(() => {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
 
-  const moveX = (e.clientX - centerX) / 40;
-  const moveY = (e.clientY - centerY) / 40;
+      // Calcola il movimento del mouse (diviso per 40 per renderlo morbido)
+      const moveX = (e.clientX - centerX) / 40;
+      const moveY = (e.clientY - centerY) / 40;
 
-  folderStack.style.transform = `rotateY(${-30 + moveX}deg) rotateX(${10 - moveY}deg) translateX(-10px)`;
+      // Applica l'angolo base sommandoci il movimento del mouse
+      folderStack.style.transform = `rotateY(${-30 + moveX}deg) rotateX(${10 - moveY}deg) translateX(-10px)`;
+
+      isStackTicking = false; // Sblocca per il prossimo frame
+    });
+    isStackTicking = true; // Blocca i calcoli inutili tra un frame e l'altro
+  }
 });
-
 // 2. Ritorna alla posizione originale se esci col mouse dallo schermo
 document.addEventListener('mouseleave', () => {
   if (!isUnlocked) {
@@ -357,27 +368,38 @@ projects.forEach((p, index) => {
   `;
   grid.appendChild(card);
 
-  // 3D TILT AND GLOW TRACKING EFFECT
+// --- EFFETTO 3D TILT E GLOW TRACKING (OTTIMIZZATO SAFARI) ---
+  let isTicking = false; // Flag per il requestAnimationFrame
+
   card.addEventListener('mousemove', (e) => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // Se il frame precedente non è ancora stato disegnato, ignora il movimento
+    if (!isTicking) {
+      window.requestAnimationFrame(() => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
 
-    const rotateX = ((y - centerY) / centerY) * -6;
-    const rotateY = ((x - centerX) / centerX) * 6;
+        const rotateX = ((y - centerY) / centerY) * -6;
+        const rotateY = ((x - centerX) / centerX) * 6;
 
-    const tiltElement = card.querySelector('.folder-tilt');
+        const tiltElement = card.querySelector('.folder-tilt');
 
-    tiltElement.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-    tiltElement.style.setProperty('--mouse-x', `${x}px`);
-    tiltElement.style.setProperty('--mouse-y', `${y}px`);
+        tiltElement.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        tiltElement.style.setProperty('--mouse-x', `${x}px`);
+        tiltElement.style.setProperty('--mouse-y', `${y}px`);
+
+        isTicking = false; // Sblocca il frame successivo
+      });
+      isTicking = true; // Blocca calcoli extra finché non viene renderizzato il frame
+    }
   });
 
   card.addEventListener('mouseleave', () => {
     const tiltElement = card.querySelector('.folder-tilt');
+    // Resetta fluidamente la card quando il mouse esce
     tiltElement.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
   });
 });

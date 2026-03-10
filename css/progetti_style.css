@@ -103,6 +103,11 @@ h1 {
   transform-style: preserve-3d;
   transform: rotateY(-30deg) rotateX(10deg) translateX(-10px);
 
+  /* --- HACK SAFARI: Accelerazione Hardware --- */
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform;
+
   /* Transizione scattante e morbida per seguire perfettamente il cursore */
   transition: transform 0.15s ease-out;
   cursor: pointer;
@@ -198,6 +203,13 @@ h1 {
   /* Transizione morbida quando il mouse entra o esce */
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
+
+  /* --- HACK SAFARI: Forza Accelerazione Hardware --- */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0); /* Sveglia la GPU su iOS/macOS */
+  -webkit-font-smoothing: subpixel-antialiased; /* Evita che il testo tremi durante il tilt */
+
 }
 
 /* Quando il mouse è sopra, riduciamo il delay della transizione per farlo agganciare al mouse */
