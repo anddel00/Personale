@@ -188,11 +188,17 @@ const projectsIT = [
   {
     id: 6,
     title: "Questo Portfolio",
-    year: "Work in Progress",
-    shortDesc: "Work in Progress.",
+    year: "2026",
+    shortDesc: "Il mio Portfolio Personale",
     fullDesc: "Il sito che stai navigando è un esempio vivo delle mie competenze attuali.\n\nCostruito da zero con un approccio 'Mobile-First', utilizza tecnologie web moderne per garantire fluidità, estetica e pulizia del codice, riflettendo la mia attenzione per i dettagli e la performance.",
     gallery: [
-      { src: "img/fotoprofilo.jpg", title: "Work in Progress..." }
+      { src: "img/personale_home.png", title: "Homepage Portfolio" },
+      { src: "img/mobile_home.png", title: "Homepage Mobile" },
+      { src: "img/profilo_header.png", title: "Sezione Header Profilo" },
+      { src: "img/profilo_skillcard.png", title: "Skill Card Profilo" },
+      { src: "img/progetti_pila.png", title: "Vista Pila Progetti" },
+      { src: "img/progetti_folder.png", title: "Cartelle Progetti" },
+      { src: "img/menunav_mobile.png", title: "Menu Navigazione Mobile" }
     ],
     tech: ["HTML5", "CSS3 Moderno", "JavaScript ES6", "Glassmorphism"],
     link: "#",
@@ -321,11 +327,17 @@ const projectsEN = [
   {
     id: 6,
     title: "This Portfolio",
-    year: "Work in Progress",
-    shortDesc: "Work in Progress.",
+    year: "2026",
+    shortDesc: "My Personal Portfolio",
     fullDesc: "The website you are browsing is a live example of my current skills.\n\nBuilt from scratch with a 'Mobile-First' approach, it uses modern web technologies to ensure fluidity, aesthetics, and clean code, reflecting my attention to detail and performance.",
     gallery: [
-      { src: "img/fotoprofilo.jpg", title: "Work in Progress..." }
+      { src: "img/personale_home.png", title: "Portfolio Homepage" },
+      { src: "img/mobile_home.png", title: "Mobile Homepage" },
+      { src: "img/profilo_header.png", title: "Profile Header Section" },
+      { src: "img/profilo_skillcard.png", title: "Profile Skill Card" },
+      { src: "img/progetti_pila.png", title: "Projects Stack View" },
+      { src: "img/progetti_folder.png", title: "Projects Folders" },
+      { src: "img/menunav_mobile.png", title: "Mobile Navigation Menu" }
     ],
     tech: ["HTML5", "Modern CSS3", "JavaScript ES6", "Glassmorphism"],
     link: "#",
